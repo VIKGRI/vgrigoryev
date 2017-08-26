@@ -13,8 +13,7 @@ class Max {
 	 *@return maximum value
 	 */
     public int max(int first, int second) {
-    int max = first >= second ? first : second;
-	return max;
+	   return first >= second ? first : second;
 	}
 	/**
      *This method is used to calculate the maximum of three values.
@@ -24,7 +23,6 @@ class Max {
 	 *@return maximum value
 	 */
     public int max(int first, int second, int third) {
-       int max = max(max(first, second), third);
-	   return max;
+       return max(max(first, second), third);
 	}
 }
