@@ -23,10 +23,8 @@ public class Board {
 			 } else {
 			     builder.append(' ');
 			 }
-			 if (j == width - 1) {
-			     builder.append(line);
-			 }
 		  }
+		  builder.append(line);
 	  }
 	  return builder.toString();
    }
