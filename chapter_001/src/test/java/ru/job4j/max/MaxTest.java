@@ -50,4 +50,16 @@ public class MaxTest {
         int result = maxim.max(1, 1);
         assertThat(result, is(1));
     }
+	/**
+     *method for max method testing.
+     *@author vgrigoryev
+     *@since 26.08.2017
+     *@version 1
+     */
+    @Test
+    public void whenThirdMoreOtherTwo() {
+        Max maxim = new Max();
+        int result = maxim.max(1, 1, 3);
+        assertThat(result, is(3));
+    }
 }
