@@ -51,5 +51,26 @@ public class ConvertListTest {
 		int[][] result = cl.toArray(sourceList, 3);
 		int[][] expectArray = new int[][]{{1, 2, 3}, {4, 5, 6}, {7, 0, 0}};
 		assertThat(result, is(expectArray));
+	}
+	/**
+	*method for convert method testing.
+	*/
+	@Test
+	public void whenConvertListOfArraysOfIntsThenResultListsMatch() {
+		ConvertList convertList = new ConvertList();
+		List<int[]> list = new ArrayList<int[]>();
+		list.add(new int[]{1, 2});
+		list.add(new int[]{3, 4, 5, 6});
+		list.add(new int[]{7});
+		List<Integer> result = convertList.convert(list);
+		List<Integer> expectList = new ArrayList<Integer>();
+		expectList.add(1);
+		expectList.add(2);
+		expectList.add(3);
+		expectList.add(4);
+		expectList.add(5);
+		expectList.add(6);
+		expectList.add(7);
+		assertThat(result, is(expectList));
 	 }
 }

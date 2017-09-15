@@ -54,4 +54,18 @@ public class ConvertList {
 		}
 		return result;
 	}
+	/**
+	*Method is used for converting list of int-arrays into list of Integers.
+	*@param list Specified list to convert
+	*@return List of Integers is build from list
+	*/
+	public List<Integer> convert(List<int[]> list) {
+		List<Integer> result = new ArrayList<Integer>();
+		for (int[] array : list) {
+			for (int value : array) {
+				result.add(value);
+			}
+		}
+		return result;
+	}
 }
