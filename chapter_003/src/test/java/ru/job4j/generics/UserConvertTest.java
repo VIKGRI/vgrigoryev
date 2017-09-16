@@ -23,11 +23,11 @@ public class UserConvertTest {
 	public void whenConvertListToMapThenMapsMatch() {
 		UserConvert userConvert = new UserConvert();
 		List<User> usersList = new ArrayList<>();
-		usersList.add(new User(1, "Ann", "Rostov"));
-		usersList.add(new User(2, "John", "New York"));
-		usersList.add(new User(3, "Peter", "Samara"));
-		usersList.add(new User(4, "Alex", "Moscow"));
-		usersList.add(new User(5, "Mary", "London"));
+		usersList.add(new User(1, "Ann", 21, "Rostov"));
+		usersList.add(new User(2, "John", 23, "New York"));
+		usersList.add(new User(3, "Peter", 52, "Samara"));
+		usersList.add(new User(4, "Alex", 46, "Moscow"));
+		usersList.add(new User(5, "Mary", 33, "London"));
 		HashMap<Integer, User> expectMap = new HashMap<Integer, User>();
 		for (User user : usersList) {
 			expectMap.put(user.getId(), user);
