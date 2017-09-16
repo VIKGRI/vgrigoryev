@@ -53,6 +53,17 @@ public class ConvertListTest {
 		assertThat(result, is(expectArray));
 	}
 	/**
+	 *method for toArray method testing.
+	 */
+	@Test
+	public void whenConvertNullListThenEmptyArraysReturns() {
+		ConvertList cl = new ConvertList();
+		List<Integer> sourceList = null;
+		int[][] result = cl.toArray(sourceList, 3);
+		int[][] expectArray = new int[0][];
+		assertThat(result, is(expectArray));
+	}
+	/**
 	*method for convert method testing.
 	*/
 	@Test

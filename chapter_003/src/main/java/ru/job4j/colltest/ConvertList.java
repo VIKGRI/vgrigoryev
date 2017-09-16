@@ -37,18 +37,21 @@ public class ConvertList {
 		if (rows == 0) {
 			throw new UnsupportedOperationException("It is not available to specify 0 rows");
 		}
-		int columns = list.size() / rows;
-		if (list.size() % rows != 0) {
-			columns++;
-		}
-		int[][] result = new int[rows][columns];
-		ListIterator<Integer> it = list.listIterator();
-		for (int i = 0; i < result.length; i++) {
-			for (int j = 0; j < result[i].length; j++) {
-				if (it.hasNext()) {
-					result[i][j] = it.next();
-				} else {
-					result[i][j] = 0;
+		int[][] result = new int[0][];
+		if (list != null) {
+			int columns = list.size() / rows;
+			if (list.size() % rows != 0) {
+				columns++;
+			}
+			result = new int[rows][columns];
+			ListIterator<Integer> it = list.listIterator();
+			for (int i = 0; i < result.length; i++) {
+				for (int j = 0; j < result[i].length; j++) {
+					if (it.hasNext()) {
+						result[i][j] = it.next();
+					} else {
+						result[i][j] = 0;
+					}
 				}
 			}
 		}
