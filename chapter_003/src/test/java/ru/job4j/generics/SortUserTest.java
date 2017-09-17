@@ -40,4 +40,48 @@ public class SortUserTest {
 		Set<User> resultSet = sortUsers.sort(usersList);
 		assertThat(resultSet, is(expectSet));
 	 }
+	/**
+	 *method for sortUser method testing.
+	 */
+	@Test
+	public void whenPassListOfUsersThenSortedByNameLengthListReturns() {
+		SortUser sortUsers = new SortUser();
+		List<User> usersList = new ArrayList<>();
+
+		usersList.add(new User(2, "Ted", 23, "New York"));
+		usersList.add(new User(1, "Ann", 21, "Rostov"));
+		usersList.add(new User(3, "Peter", 52, "Samara"));
+		usersList.add(new User(4, "Alex", 46, "Moscow"));
+		usersList.add(new User(5, "Mary", 33, "London"));
+		List<User> expectList = new ArrayList<User>();
+		expectList.add(new User(1, "Ann", 21, "Rostov"));
+		expectList.add(new User(2, "Ted", 23, "New York"));
+		expectList.add(new User(4, "Alex", 46, "Moscow"));
+		expectList.add(new User(5, "Mary", 33, "London"));
+		expectList.add(new User(3, "Peter", 52, "Samara"));
+		List<User> resultList = sortUsers.sortNameLength(usersList);
+		assertThat(resultList, is(expectList));
+	}
+	/**
+	 *method for sortUser method testing.
+	 */
+	@Test
+	public void whenPassListOfUsersThenSortedByAllFieldsListReturns() {
+		SortUser sortUsers = new SortUser();
+		List<User> usersList = new ArrayList<>();
+
+		usersList.add(new User(2, "Ted", 23, "New York"));
+		usersList.add(new User(1, "Ann", 21, "Rostov"));
+		usersList.add(new User(3, "Ted", 52, "Samara"));
+		usersList.add(new User(4, "Alex", 46, "Moscow"));
+		usersList.add(new User(5, "Alex", 33, "London"));
+		List<User> expectList = new ArrayList<User>();
+		expectList.add(new User(5, "Alex", 33, "London"));
+		expectList.add(new User(4, "Alex", 46, "Moscow"));
+		expectList.add(new User(1, "Ann", 21, "Rostov"));
+		expectList.add(new User(2, "Ted", 23, "New York"));
+		expectList.add(new User(3, "Ted", 52, "Samara"));
+		List<User> resultList = sortUsers.sortByAllFields(usersList);
+		assertThat(resultList, is(expectList));
+	}
 }
