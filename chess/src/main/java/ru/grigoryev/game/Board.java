@@ -85,7 +85,7 @@ public class Board {
 		for (int i = 0; i < this.position; i++) {
 			for (int j = 0; j < way.length; j++) {
 				if (figures[i].isPositionSame(way[j])) {
-					throw new ImpossibleMoveException("Other figure is on your way.");
+					throw new OccupiedWayException("Other figure is on your way.");
 				}
 			}
 		}

@@ -52,86 +52,66 @@ public class BoardTest {
 	}
 	/**
 	*Method for testing movement of the figure Bishop when this movement is not according to the rules.
+	 * @throws ImpossibleMoveException if the figure is not able to move this way
+	 * @throws OccupiedWayException if the destination cell is occupied or another figure is on the way
+	 * @throws FigureNotFoundException if source cell doesn't hold any figure
 	*/
-	@Test
-	public void whenMoveFigureNotInRightCellThenImpossibleMoveExceptionOccurs() {
+	@Test(expected = ImpossibleMoveException.class)
+	public void whenMoveFigureNotInRightCellThenImpossibleMoveExceptionOccurs()
+			throws ImpossibleMoveException, OccupiedWayException, FigureNotFoundException {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		System.setOut(new PrintStream(out));
 		Board game = new Board();
 		game.addFigure(new Bishop(new Cell(2, 0), Color.BLACK));
 		game.addFigure(new Bishop(new Cell(5, 0), Color.BLACK));
-		try {
-			System.out.println(game.move(new Cell(2, 0), new Cell(6, 5)));
-		} catch (ImpossibleMoveException ime) {
-			System.out.println(ime.getMessage());
-		} catch (OccupiedWayException owe) {
-			System.out.println(owe.getMessage());
-		} catch (FigureNotFoundException fnfe) {
-			System.out.println(fnfe.getMessage());
-		}
-		assertThat(out.toString(), is(String.format("Bishop is not able to move in this destination" + "%s", System.getProperty("line.separator"))));
+		System.out.println(game.move(new Cell(2, 0), new Cell(6, 5)));
 	}
 	/**
 	*Method for testing case when the figure in the source cell is not found.
+	 * @throws ImpossibleMoveException if the figure is not able to move this way
+	 * @throws OccupiedWayException if the destination cell is occupied or another figure is on the way
+	 * @throws FigureNotFoundException if source cell doesn't hold any figure
 	*/
-	@Test
-	public void whenFigureNotFoundThenFigureNotFoundExceptionOccurs() {
+	@Test(expected = FigureNotFoundException.class)
+	public void whenFigureNotFoundThenFigureNotFoundExceptionOccurs()
+			throws ImpossibleMoveException, OccupiedWayException, FigureNotFoundException {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		System.setOut(new PrintStream(out));
 		Board game = new Board();
 		game.addFigure(new Bishop(new Cell(2, 0), Color.WHITE));
 		game.addFigure(new Bishop(new Cell(5, 0), Color.WHITE));
-		try {
-			System.out.println(game.move(new Cell(3, 0), new Cell(6, 5)));
-		} catch (ImpossibleMoveException ime) {
-			System.out.println(ime.getMessage());
-		} catch (OccupiedWayException owe) {
-			System.out.println(owe.getMessage());
-		} catch (FigureNotFoundException fnfe) {
-			System.out.println(fnfe.getMessage());
-		}
-		assertThat(out.toString(), is(String.format("Figure is not found" + "%s", System.getProperty("line.separator"))));
+		System.out.println(game.move(new Cell(3, 0), new Cell(6, 5)));
 	}
 	/**
 	*Method for testing movement if there is another figure on the way.
+	 * @throws ImpossibleMoveException if the figure is not able to move this way
+	 * @throws OccupiedWayException if the destination cell is occupied or another figure is on the way
+	 * @throws FigureNotFoundException if source cell doesn't hold any figure
 	*/
-	@Test
-	public void whenAnotherFigureOnWayThenOccupiedWayExceptionOccurs() {
+	@Test(expected = OccupiedWayException.class)
+	public void whenAnotherFigureOnWayThenOccupiedWayExceptionOccurs()
+			throws ImpossibleMoveException, OccupiedWayException, FigureNotFoundException {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		System.setOut(new PrintStream(out));
 		Board game = new Board();
 		game.addFigure(new Bishop(new Cell(2, 0), Color.BLACK));
 		game.addFigure(new Bishop(new Cell(5, 3), Color.BLACK));
-		try {
-			System.out.println(game.move(new Cell(2, 0), new Cell(7, 5)));
-		} catch (ImpossibleMoveException ime) {
-			System.out.println(ime.getMessage());
-		} catch (OccupiedWayException owe) {
-			System.out.println(owe.getMessage());
-		} catch (FigureNotFoundException fnfe) {
-			System.out.println(fnfe.getMessage());
-		}
-		assertThat(out.toString(), is(String.format("Other figure is on your way." + "%s", System.getProperty("line.separator"))));
+		System.out.println(game.move(new Cell(2, 0), new Cell(7, 5)));
 	}
-		/**
+	/**
 	*Method for testing movement if the destination cell is occupied.
+		 * @throws ImpossibleMoveException if the figure is not able to move this way
+		 * @throws OccupiedWayException if the destination cell is occupied or another figure is on the way
+		 * @throws FigureNotFoundException if source cell doesn't hold any figure
 	*/
-	@Test
-	public void whenDestinationCellOccupiedThenOccupiedWayExceptionOccurs() {
+	@Test(expected = OccupiedWayException.class)
+	public void whenDestinationCellOccupiedThenOccupiedWayExceptionOccurs()
+			throws ImpossibleMoveException, OccupiedWayException, FigureNotFoundException {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		System.setOut(new PrintStream(out));
 		Board game = new Board();
 		game.addFigure(new Bishop(new Cell(2, 0), Color.WHITE));
 		game.addFigure(new Bishop(new Cell(7, 5), Color.WHITE));
-		try {
-			System.out.println(game.move(new Cell(2, 0), new Cell(7, 5)));
-		} catch (ImpossibleMoveException ime) {
-			System.out.println(ime.getMessage());
-		} catch (OccupiedWayException owe) {
-			System.out.println(owe.getMessage());
-		} catch (FigureNotFoundException fnfe) {
-			System.out.println(fnfe.getMessage());
-		}
-		assertThat(out.toString(), is(String.format("Destination cell is occupied" + "%s", System.getProperty("line.separator"))));
+		System.out.println(game.move(new Cell(2, 0), new Cell(7, 5)));
 	}
 }
