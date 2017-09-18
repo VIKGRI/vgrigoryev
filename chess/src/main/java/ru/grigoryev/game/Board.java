@@ -81,18 +81,15 @@ public class Board {
 		}
 		/*
 		*Проверяем есть ли на пути другие фигуры,
-		*если наша фигура не Конь.
 		*/
-		if (current.getFigureType() != "Knight") {
-			for (int i = 0; i < this.position; i++) {
-				for (int j = 0; j < way.length; j++) {
-					if (figures[i].isPositionSame(way[j])) {
-						throw new ImpossibleMoveException("Other figure is on your way.");
-					}
+		for (int i = 0; i < this.position; i++) {
+			for (int j = 0; j < way.length; j++) {
+				if (figures[i].isPositionSame(way[j])) {
+					throw new ImpossibleMoveException("Other figure is on your way.");
 				}
 			}
 		}
-		figures[sourceIndex] = current.clone(destination); // Записываем фигуру в ту же ячейку в массиве, но с новыми данными клетки на доске.
+		figures[sourceIndex] = current.clone(destination, figures[sourceIndex].getColor()); // Записываем фигуру в ту же ячейку в массиве, но с новыми данными клетки на доске.
 		return true;
 	}
 }

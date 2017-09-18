@@ -25,10 +25,20 @@ public class BoardTest {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		System.setOut(new PrintStream(out));
 		Board game = new Board();
-		game.addFigure(new Bishop(new Cell(2, 0)));
-		game.addFigure(new Bishop(new Cell(5, 0)));
+		game.addFigure(new Bishop(new Cell(2, 0), Color.BLACK));
+		game.addFigure(new Bishop(new Cell(5, 0), Color.WHITE));
+		game.addFigure(new Knight(new Cell(4, 5), Color.WHITE));
+		game.addFigure(new Rook(new Cell(6, 2), Color.BLACK));
+		game.addFigure(new Pawn(new Cell(0, 1), Color.BLACK));
+		game.addFigure(new Queen(new Cell(0, 5), Color.BLACK));
+		game.addFigure(new Queen(new Cell(0, 7), Color.WHITE));
 		try {
-			System.out.println(game.move(new Cell(2, 0), new Cell(4, 2)));
+			System.out.print(game.move(new Cell(2, 0), new Cell(4, 2)) + " ");
+			System.out.print(game.move(new Cell(4, 5), new Cell(6, 6)) + " ");
+			System.out.print(game.move(new Cell(6, 2), new Cell(6, 5)) + " ");
+			System.out.print(game.move(new Cell(0, 1), new Cell(0, 3)) + " ");
+			System.out.print(game.move(new Cell(0, 5), new Cell(2, 7)) + " ");
+			System.out.println(game.move(new Cell(0, 7), new Cell(1, 7)));
 		} catch (ImpossibleMoveException ime) {
 			System.out.println(ime.getMessage());
 		} catch (OccupiedWayException owe) {
@@ -36,7 +46,9 @@ public class BoardTest {
 		} catch (FigureNotFoundException fnfe) {
 			System.out.println(fnfe.getMessage());
 		}
-		assertThat(out.toString(), is(String.format("true" + "%s", System.getProperty("line.separator"))));
+		assertThat(out.toString(), is(String.format("true" + " " + "true"
+						+ " " + "true" + " " + "true" + " " + "true" + " " + "true" + "%s",
+				System.getProperty("line.separator"))));
 	}
 	/**
 	*Method for testing movement of the figure Bishop when this movement is not according to the rules.
@@ -46,8 +58,8 @@ public class BoardTest {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		System.setOut(new PrintStream(out));
 		Board game = new Board();
-		game.addFigure(new Bishop(new Cell(2, 0)));
-		game.addFigure(new Bishop(new Cell(5, 0)));
+		game.addFigure(new Bishop(new Cell(2, 0), Color.BLACK));
+		game.addFigure(new Bishop(new Cell(5, 0), Color.BLACK));
 		try {
 			System.out.println(game.move(new Cell(2, 0), new Cell(6, 5)));
 		} catch (ImpossibleMoveException ime) {
@@ -67,8 +79,8 @@ public class BoardTest {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		System.setOut(new PrintStream(out));
 		Board game = new Board();
-		game.addFigure(new Bishop(new Cell(2, 0)));
-		game.addFigure(new Bishop(new Cell(5, 0)));
+		game.addFigure(new Bishop(new Cell(2, 0), Color.WHITE));
+		game.addFigure(new Bishop(new Cell(5, 0), Color.WHITE));
 		try {
 			System.out.println(game.move(new Cell(3, 0), new Cell(6, 5)));
 		} catch (ImpossibleMoveException ime) {
@@ -88,8 +100,8 @@ public class BoardTest {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		System.setOut(new PrintStream(out));
 		Board game = new Board();
-		game.addFigure(new Bishop(new Cell(2, 0)));
-		game.addFigure(new Bishop(new Cell(5, 3)));
+		game.addFigure(new Bishop(new Cell(2, 0), Color.BLACK));
+		game.addFigure(new Bishop(new Cell(5, 3), Color.BLACK));
 		try {
 			System.out.println(game.move(new Cell(2, 0), new Cell(7, 5)));
 		} catch (ImpossibleMoveException ime) {
@@ -109,8 +121,8 @@ public class BoardTest {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		System.setOut(new PrintStream(out));
 		Board game = new Board();
-		game.addFigure(new Bishop(new Cell(2, 0)));
-		game.addFigure(new Bishop(new Cell(7, 5)));
+		game.addFigure(new Bishop(new Cell(2, 0), Color.WHITE));
+		game.addFigure(new Bishop(new Cell(7, 5), Color.WHITE));
 		try {
 			System.out.println(game.move(new Cell(2, 0), new Cell(7, 5)));
 		} catch (ImpossibleMoveException ime) {

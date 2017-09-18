@@ -12,15 +12,21 @@ public abstract class Figure {
 	*/
 	private final Cell position;
 	/**
+	*The color of figure.
+	*/
+	private Color color;
+	/**
 	*Represents the way in which figure makes a move.
 	*/
 	private MoveBehavior moveBehavior;
 	/**
 	*Constructor with parameters.
 	*@param position Position of the figure
+	 *@param color Color of the figure
 	*/
-	public Figure(Cell position) {
+	public Figure(Cell position, Color color) {
 		this.position = position;
+		this.color  = color;
 	}
 	/**
 	*This method set the current movement behavior of figure.
@@ -30,6 +36,13 @@ public abstract class Figure {
 		if (moveBehavior != null) {
 			this.moveBehavior = moveBehavior;
 		}
+	}
+	/**
+	*This method provides getting color of figure.
+	*@return color of figure
+	*/
+	public Color getColor() {
+		return this.color;
 	}
 	/**
 	*This method is used for moving the figure.
@@ -56,7 +69,20 @@ public abstract class Figure {
 	/**
 	*This method is used for creating a new figure.
 	*@param cell location of figure
+	 *@param color color of figure
 	*@return new figure
 	*/
-	 public abstract Figure clone(Cell cell);
+	 public abstract Figure clone(Cell cell, Color color);
+}
+/**
+*Enumeration that represents the figure's color.
+*@author vgrigoryev
+*@since 19.09.2017
+*@version 1
+*/
+enum Color {
+	/**
+	 * represents colors used in this game.
+	 */
+	WHITE, BLACK
 }

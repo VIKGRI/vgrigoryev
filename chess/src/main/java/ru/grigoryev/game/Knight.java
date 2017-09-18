@@ -1,27 +1,27 @@
 package ru.grigoryev.game;
 
 /**
-*Class represent the bishop figure in the chess game.
+*Class represent the knight figure in the chess game.
 *@author vgrigoryev
-*@since 11.09.2017
+*@since 17.09.2017
 *@version 1
 */
-public class Bishop extends Figure {
+public class Knight extends Figure {
 	/**
 	*Constructor with parameters.
 	*@param position Position of the figure
 	 *@param color Color of the figure
 	*/
-	public Bishop(Cell position, Color color) {
+	public Knight(Cell position, Color color) {
 		super(position, color);
-		this.setMoveBehavior(new MoveAsBishop());
+		this.setMoveBehavior(new MoveAsKnight());
 	}
 	/**
 	*This method is used for identifying figure.
 	*@return figure type
 	*/
 	public String getFigureType() {
-		return "Bishop";
+		return "Knight";
 	}
 	/**
 	*This method is used for creating a new figure.
@@ -30,6 +30,6 @@ public class Bishop extends Figure {
 	*@return new figure
 	*/
 	public Figure clone(Cell cell, Color color) {
-		return new Bishop(cell, color);
+		return new Knight(cell, color);
 	}
 }
