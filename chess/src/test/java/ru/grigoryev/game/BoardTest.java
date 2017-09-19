@@ -32,7 +32,7 @@ public class BoardTest {
 		game.addFigure(new Rook(new Cell(6, 2), Color.BLACK));
 		game.addFigure(new Pawn(new Cell(0, 1), Color.BLACK));
 		game.addFigure(new Queen(new Cell(0, 5), Color.BLACK));
-		game.addFigure(new Queen(new Cell(0, 7), Color.WHITE));
+		game.addFigure(new Queen(new Cell(0, 7), Color.BLACK));
 		System.out.print(game.move(new Cell(2, 0), new Cell(4, 2)) + " ");
 		System.out.print(game.move(new Cell(4, 5), new Cell(6, 6)) + " ");
 		System.out.print(game.move(new Cell(6, 2), new Cell(6, 5)) + " ");
