@@ -26,6 +26,8 @@ public class SimpleArray<E> {
     public SimpleArray(int size) {
         if (size >= 0) {
             this.objects = new Object[size];
+        } else {
+            this.objects = new Object[0];
         }
     }
 
@@ -61,6 +63,16 @@ public class SimpleArray<E> {
         }
         return isDeleted;
     }
+    /**
+     * Deletes element which is equals to value.
+     *
+     * @param value specified
+     * @return true if deletion succeeds and false otherwise
+     */
+    public boolean delete(E value) {
+        int index = this.find(value);
+        return index == -1 ? false : this.delete(index);
+    }
 
     /**
      * Updatess element in the specified position with the specified value.
@@ -76,7 +88,15 @@ public class SimpleArray<E> {
         }
         return isUpdated;
     }
-
+    /**
+     * Updatess element which is equal to specified value.
+     * @param value    specified value
+     * @return true if operation succeeds and false otherwise
+     */
+    public boolean update(E value) {
+        int index = this.find(value);
+        return index == -1 ? false : this.update(index, value);
+    }
     /**
      * Gets element in the specified position.
      * @param position specified position of the element
@@ -102,5 +122,21 @@ public class SimpleArray<E> {
             }
         }
         return isExist;
+    }
+    /**
+     * Tests wether the array contains specified value or not.
+     * @param value specified value
+     * @return index if array contains specified value and -1 otherwise
+     */
+    private int find(E value) {
+        boolean isFound = false;
+        int i = 0;
+        for (; i < this.index; i++) {
+            if (objects[i].equals(value)) {
+                isFound = true;
+                break;
+            }
+        }
+        return isFound ? i : -1;
     }
 }

@@ -115,7 +115,6 @@ public class BankTest {
 	 * @throws UnavailableAccountDataException if data of account are incorrect
 	 * @throws NoSuchUserException if such user is not found
 	 * @throws RewriteExistingAccountException if such account has already been created
-	 * @throws NoSuchAccountException if such account is not found
 	 */
 	@Test
 	public void whenGetUserAccountsThenAccountsMatch()
@@ -142,7 +141,6 @@ public class BankTest {
 	 * @throws UnavailableAccountDataException if data of account are incorrect
 	 * @throws NoSuchUserException if such user is not found
 	 * @throws RewriteExistingAccountException if such account has already been created
-	 * @throws NoSuchAccountException if such account is not found
 	 */
 	@Test
 	public void whenTransferMoneyFromUserHasMoneyThenTrue()
@@ -173,7 +171,6 @@ public class BankTest {
 	 * @throws UnavailableAccountDataException if data of account are incorrect
 	 * @throws NoSuchUserException if such user is not found
 	 * @throws RewriteExistingAccountException if such account has already been created
-	 * @throws NoSuchAccountException if such account is not found
 	 */
 	@Test
 	public void whenTransferMoneyFromUserHasNoMoneyThenFalse()
@@ -204,7 +201,6 @@ public class BankTest {
 	 * @throws UnavailableAccountDataException if data of account are incorrect
 	 * @throws NoSuchUserException if such user is not found
 	 * @throws RewriteExistingAccountException if such account has already been created
-	 * @throws NoSuchAccountException if such account is not found
 	 */
 	@Test
 	public void whenGetAllUsersThenListsMatch()
