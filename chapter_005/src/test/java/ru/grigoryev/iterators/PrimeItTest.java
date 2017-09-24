@@ -45,7 +45,7 @@ public class PrimeItTest {
      */
     @Test
     public void whenCheckNextPositionThenReturnConstantValue() {
-        PrimeIt it = new PrimeIt(new int[]{3, 5, 1, 8});
+        PrimeIt it = new PrimeIt(new int[]{3, 5});
 
         it.next();
         it.next();

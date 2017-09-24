@@ -53,14 +53,7 @@ public class PrimeIt implements Iterator {
 
     @Override
     public boolean hasNext() {
-        boolean isNextPrimePresent = false;
-        for (int i = this.index; i < values.length; i++) {
-            if (this.isPrime(values[i])) {
-                isNextPrimePresent = true;
-                break;
-            }
-        }
-        return isNextPrimePresent;
+        return this.index < values.length;
     }
 
     /*
