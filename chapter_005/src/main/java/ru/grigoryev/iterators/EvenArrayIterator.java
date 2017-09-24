@@ -26,14 +26,7 @@ public class EvenArrayIterator implements  Iterator {
 
     @Override
     public boolean hasNext() {
-        boolean isNextEvenPresent = false;
-        for (int i = this.index; i < values.length; i++) {
-            if (values[i] % 2 == 0) {
-                isNextEvenPresent = true;
-                break;
-            }
-        }
-        return isNextEvenPresent;
+        return this.index < values.length;
     }
 /*
 When there are no even numbers, then 1 returns.

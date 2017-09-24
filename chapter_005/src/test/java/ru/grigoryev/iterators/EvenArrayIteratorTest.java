@@ -47,7 +47,7 @@ public class EvenArrayIteratorTest {
      */
     @Test
     public void whenCheckNextPositionThenReturnConstantValue() {
-        EvenArrayIterator it = new EvenArrayIterator(new int[]{4, 2, 1, 1});
+        EvenArrayIterator it = new EvenArrayIterator(new int[]{4, 2});
 
         it.next();
         it.next();
