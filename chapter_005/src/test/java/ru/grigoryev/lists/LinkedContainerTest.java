@@ -9,18 +9,18 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
 /**
- * Class for testing DynamicContainer class's methods.
+ * Class for testing LinkedContainerTest class's methods.
  *
  * @author vgrigoryev
  * @since 25.09.2017
  */
-public class DynamicContainerTest {
+public class LinkedContainerTest {
     /**
      * Testing add() method.
      */
     @Test
-    public void whenAddMoreElementsThenCapacityIncreases() {
-        DynamicContainer<Integer> container = new DynamicContainer<>(4);
+    public void whenAddMoreElementsThenSizeMatches() {
+        LinkedContainer<Integer> container = new LinkedContainer<>();
         container.add(1);
         container.add(2);
         container.add(3);
@@ -32,12 +32,13 @@ public class DynamicContainerTest {
 
         assertThat(result, is(expect));
     }
+
     /**
      * Testing get() method.
      */
     @Test
     public void whenGetElementByPositionThenValueMatches() {
-        DynamicContainer<Integer> container = new DynamicContainer<>(4);
+        LinkedContainer<Integer> container = new LinkedContainer<>();
         container.add(1);
         container.add(2);
         container.add(3);
@@ -49,12 +50,13 @@ public class DynamicContainerTest {
 
         assertThat(result, is(expect));
     }
+
     /**
      * Testing next() method.
      */
     @Test
     public void whenGetNextCallThenNumbersMatch() {
-        DynamicContainer<Integer> container = new DynamicContainer<>(4);
+        LinkedContainer<Integer> container = new LinkedContainer<>();
         container.add(1);
         container.add(2);
         container.add(3);
@@ -74,7 +76,7 @@ public class DynamicContainerTest {
      */
     @Test
     public void whenCheckNextPositionThenReturnConstantValue() {
-        DynamicContainer<Integer> container = new DynamicContainer<>(4);
+        LinkedContainer<Integer> container = new LinkedContainer<>();
         container.add(1);
         container.add(2);
 
