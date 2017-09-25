@@ -28,7 +28,7 @@ public class LinkedContainer<E> implements Iterable<E> {
      * Default constructor.
      */
     public LinkedContainer() {
-        this.head = new Node();
+        this.head = new Node<E>();
         this.head.setNext(null);
         this.head.setPrivious(null);
         this.tail = head;
@@ -40,12 +40,37 @@ public class LinkedContainer<E> implements Iterable<E> {
      * @param value value to add
      */
     public void add(E value) {
-        Node<E> node = new Node(value);
+        Node<E> node = new Node<>(value);
         tail.setNext(node);
         node.setPrivious(tail);
         tail = node;
         size++;
     }
+
+    /**
+     * Deletes element on specified position from the list.
+     *
+     * @param position specified position
+     * @return true if operation succeeds and false otherwise
+     */
+    public boolean delete(int position) {
+        boolean isDeleted = false;
+        if (position < size) {
+            Node<E> current = this.head.getNext();
+            for (int i = 0; i < position; i++) {
+                current = current.getNext();
+            }
+            current.getPrivious().setNext(current.getNext());
+            if (current.getNext() != null) {
+                current.getNext().setPrivious(current.getPrivious());
+            }
+            current = null;
+            size--;
+            isDeleted = true;
+        }
+        return isDeleted;
+    }
+
     /**
      * Gets element in the specified position.
      *
@@ -83,6 +108,7 @@ public class LinkedContainer<E> implements Iterable<E> {
              * Current node.
              */
             private Node<E> currentNode = head;
+
             @Override
             public boolean hasNext() {
                 return currentNode.getNext() != null;
@@ -99,6 +125,7 @@ public class LinkedContainer<E> implements Iterable<E> {
 
 /**
  * Class represents node of list.
+ *
  * @param <T> type of element wrappered in the node.
  */
 class Node<T> {

@@ -9,7 +9,7 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
 /**
- * Class for testing LinkedContainerTest class's methods.
+ * Class for testing LinkedContainer class's methods.
  *
  * @author vgrigoryev
  * @since 25.09.2017
@@ -30,6 +30,31 @@ public class LinkedContainerTest {
         int result = container.size();
         int expect = 5;
 
+        assertThat(result, is(expect));
+    }
+    /**
+     * Testing delete() method.
+     */
+    @Test
+    public void whenDeleteElementThenListResizes() {
+        LinkedContainer<Integer> container = new LinkedContainer<>();
+        container.add(1);
+        container.add(2);
+        container.add(3);
+        container.add(4);
+        container.add(5);
+
+        container.delete(4);
+        container.delete(3);
+        container.delete(2);
+        container.delete(1);
+
+        Iterator<Integer> it = container.iterator();
+        int[] result = new int[1];
+        result[0] = it.next();
+
+
+        int[] expect = new int[]{1};
         assertThat(result, is(expect));
     }
 
