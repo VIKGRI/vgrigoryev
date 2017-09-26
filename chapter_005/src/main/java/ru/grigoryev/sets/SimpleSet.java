@@ -44,7 +44,7 @@ public class SimpleSet<E> implements Iterable<E> {
     }
 
     /**
-     * Adds specified element to the set if it doesn't have it.
+     * Adds specified element to the list.
      *
      * @param value value to add
      */

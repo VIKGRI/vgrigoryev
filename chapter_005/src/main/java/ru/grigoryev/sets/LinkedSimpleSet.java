@@ -61,7 +61,6 @@ public class LinkedSimpleSet<E> implements Iterable<E> {
             size++;
         }
     }
-
     /**
      * @return number of elements in the container
      */
