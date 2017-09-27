@@ -93,21 +93,4 @@ public class Node<T> {
     public void setPrivious(Node<T> privious) {
         this.privious = privious;
     }
-
-    /**
-     * Checks whether the list has cycle dependencies or not.
-     * @param first the first node of the list
-     * @return true if the the list has cycle dependencies and false otherwise
-     */
-    public boolean hasCycle(Node<T> first) {
-        Node<T> current = first;
-        while (current.next != null && current.next != first) {
-            current = current.next;
-        }
-        boolean hasNext = false;
-        if (current.next == first) {
-            hasNext = true;
-        }
-        return hasNext;
-    }
 }

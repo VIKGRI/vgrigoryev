@@ -101,15 +101,30 @@ public class LinkedContainerTest {
      */
     @Test
     public void whenCheckNextPositionThenReturnConstantValue() {
-        LinkedContainer<Integer> container = new LinkedContainer<>();
-        container.add(1);
-        container.add(2);
+        LinkedContainer<Integer> list = new LinkedContainer<>();
+        list.add(1);
+        list.add(2);
+        list.add(3);
+        list.add(4);
+        Node<Integer> second = list.getNode(1);
+        Node<Integer> last = list.getNode(3);
+        last.setNext(second);
+        boolean result = list.hasCycle();
 
-        Iterator<Integer> it = container.iterator();
-        it.next();
-        it.next();
-        it.hasNext();
-        boolean result = it.hasNext();
+        assertThat(result, is(true));
+    }
+    /**
+     * Testing hasCycle() method.
+     */
+    @Test
+    public void whenHasNoCycleThenFalse() {
+        LinkedContainer<Integer> list = new LinkedContainer<>();
+        list.add(1);
+        list.add(2);
+        list.add(3);
+        list.add(4);
+
+        boolean result = list.hasCycle();
 
         assertThat(result, is(false));
     }

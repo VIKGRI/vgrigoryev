@@ -88,12 +88,44 @@ public class LinkedContainer<E> implements Iterable<E> {
         }
         return result;
     }
-
+    /**
+     * Gets Node in the specified position.
+     *
+     * @param position specified position of the element
+     * @return the Node in specified position or null if it doesn't exist
+     */
+    public Node<E> getNode(int position) {
+        Node<E> current = this.head.getNext();
+        if (position < size) {
+            for (int i = 0; i < position; i++) {
+                current = current.getNext();
+            }
+        }
+        return current;
+    }
     /**
      * @return number of elements in the container
      */
     public int size() {
         return this.size;
+    }
+
+    /**
+     * Checks whether the list has cycle dependencies or not.
+     * @return true if the the list has cycle dependencies and false otherwise
+     */
+    public boolean hasCycle() {
+        Node<E> last = head;
+        boolean hasNext = false;
+        Node<E> current = head;
+        while (current.getNext() != tail) {
+            current = current.getNext();
+            if (tail.getNext() == current) {
+                hasNext = true;
+                break;
+            }
+        }
+        return hasNext;
     }
 
     @Override
