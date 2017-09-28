@@ -97,15 +97,35 @@ public class LinkedContainerTest {
         assertThat(result, is(expect));
     }
     /**
-     * Testing hasNext() method.
+     * Testing hasNext() method when tail has reference on the previous element.
      */
     @Test
-    public void whenCheckNextPositionThenReturnConstantValue() {
+    public void  whenHasCycleThenTrue() {
         LinkedContainer<Integer> list = new LinkedContainer<>();
         list.add(1);
         list.add(2);
         list.add(3);
         list.add(4);
+        Node<Integer> second = list.getNode(1);
+        Node<Integer> last = list.getNode(3);
+        last.setNext(second);
+        boolean result = list.hasCycle();
+
+        assertThat(result, is(true));
+    }
+    /**
+     * Testing hasNext() method when some element in the middle has reference on the previous element.
+     */
+    @Test
+    public void  whenHasCycleInTheMiddleThenTrue() {
+        LinkedContainer<Integer> list = new LinkedContainer<>();
+        list.add(1);
+        list.add(2);
+        list.add(3);
+        list.add(4);
+        list.add(5);
+        list.add(6);
+        list.add(7);
         Node<Integer> second = list.getNode(1);
         Node<Integer> last = list.getNode(3);
         last.setNext(second);
@@ -123,6 +143,8 @@ public class LinkedContainerTest {
         list.add(2);
         list.add(3);
         list.add(4);
+        list.add(5);
+        list.add(6);
 
         boolean result = list.hasCycle();
 

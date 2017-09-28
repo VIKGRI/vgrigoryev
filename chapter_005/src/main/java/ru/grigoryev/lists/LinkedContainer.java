@@ -117,12 +117,18 @@ public class LinkedContainer<E> implements Iterable<E> {
     public boolean hasCycle() {
         Node<E> last = head;
         boolean hasNext = false;
-        Node<E> current = head;
-        while (current.getNext() != tail) {
-            current = current.getNext();
-            if (tail.getNext() == current) {
-                hasNext = true;
-                break;
+        Node<E> outerCurrent = head;
+        Node<E> innerCurrent;
+        outer:
+        while (outerCurrent.getNext() != null) {
+            outerCurrent = outerCurrent.getNext();
+            innerCurrent = head;
+            while (innerCurrent.getNext() != outerCurrent) {
+                innerCurrent = innerCurrent.getNext();
+                if (outerCurrent.getNext() == innerCurrent) {
+                    hasNext = true;
+                    break outer;
+                }
             }
         }
         return hasNext;
