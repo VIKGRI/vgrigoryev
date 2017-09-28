@@ -93,13 +93,28 @@ public class User {
         this.birthday = birthday;
     }
 
-    @Override
+   /* @Override
     public int hashCode() {
         int result = 17;
         result = 31 * result + Objects.hashCode(this.name);
         result = 31 * result + this.children;
         result = 31 * result + Objects.hashCode(this.birthday);
         return result;
+    }*/
+
+    @Override
+    public boolean equals(Object otherObject) {
+        if (otherObject == this) {
+            return true;
+        }
+        if (!(otherObject instanceof User)) {
+            return false;
+        }
+        User other = (User) otherObject;
+
+        return Objects.equals(this.name, other.name)
+                && this.children == other.children
+                && Objects.equals(this.birthday, other.birthday);
     }
 
     @Override
