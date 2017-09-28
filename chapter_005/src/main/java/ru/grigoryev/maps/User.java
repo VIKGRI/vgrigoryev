@@ -1,6 +1,7 @@
 package ru.grigoryev.maps;
 
 import java.util.Calendar;
+import java.util.Objects;
 
 /**
  * User.
@@ -90,6 +91,15 @@ public class User {
      */
     public void setBirthday(Calendar birthday) {
         this.birthday = birthday;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 17;
+        result = 31 * result + Objects.hashCode(this.name);
+        result = 31 * result + this.children;
+        result = 31 * result + Objects.hashCode(this.birthday);
+        return result;
     }
 
     @Override

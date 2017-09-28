@@ -27,5 +27,19 @@ public class UserTest {
         users.put(second, 2);
         System.out.println(users);
     }
+    /**
+     * equals is not overriden and hashCode is overriden in User class.
+     */
+    @Test
+    public void whenNoOverrideEqualsAndHashcodeIsOverridenThenEqualUsersAreAdded() {
+        Map<User, Object> users = new HashMap<>();
+
+        User first = new User("Sergey", 2, new GregorianCalendar(1983, 11, 2));
+        User second = new User("Sergey", 2, new GregorianCalendar(1983, 11, 2));
+
+        users.put(first, 1);
+        users.put(second, 2);
+        System.out.println(users);
+    }
 
 }
