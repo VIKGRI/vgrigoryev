@@ -14,11 +14,11 @@ public class User {
     /**
      * User's name.
      */
-    private String name = "";
+    private String name;
     /**
      * Amount of User's children.
      */
-    private int children = 0;
+    private int children;
     /**
      * User's birthday.
      */
@@ -34,9 +34,16 @@ public class User {
     public User(String name, int children, Calendar birthday) {
         if (name != null) {
             this.name = name;
+        } else {
+            throw new NullPointerException();
         }
         if (children > 0) {
             this.children = children;
+        } else {
+            this.children = 0;
+        }
+        if (birthday == null) {
+            throw new NullPointerException();
         }
         this.birthday = birthday;
     }
@@ -82,7 +89,9 @@ public class User {
      * @param children number of children
      */
     public void setChildren(int children) {
-        this.children = children;
+        if (children > 0) {
+            this.children = children;
+        }
     }
 
     /**
@@ -90,7 +99,9 @@ public class User {
      * @param birthday User's birthday
      */
     public void setBirthday(Calendar birthday) {
-        this.birthday = birthday;
+        if (birthday != null) {
+            this.birthday = birthday;
+        }
     }
 
     @Override

@@ -77,5 +77,4 @@ public class LinkedSimpleSetTest {
 
         assertThat(result, is(false));
     }
-
 }
