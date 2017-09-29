@@ -17,9 +17,9 @@ public class InsertionEfficiencyTest<E> {
     public static void main(String[] args) {
         InsertionEfficiencyTest test = new InsertionEfficiencyTest();
 
-        SimpleSet<String> simpleArraySet = new SimpleSet<>();
-        LinkedSimpleSet<String> simpleLinkedSet1 = new LinkedSimpleSet<>();
-        LinkedSimpleSet<String> simpleLinkedSet2 = new LinkedSimpleSet<>();
+        SimpleSet<String> simpleArraySet = new SimpleSet<>(50000);
+        LinkedSimpleSet<String> simpleLinkedSet = new LinkedSimpleSet<>();
+        SimpleHashSet<String> simpleHashSet = new SimpleHashSet<>(50000);
 
         int numberOfStringsToAdd = 50000;
         String[] randomStrings = new String[numberOfStringsToAdd];
@@ -29,7 +29,7 @@ public class InsertionEfficiencyTest<E> {
 
         long start = System.currentTimeMillis();
         for (String str : randomStrings) {
-            simpleLinkedSet1.add(str);
+            simpleLinkedSet.add(str);
         }
         long finish = System.currentTimeMillis();
         long time1 = finish - start;
@@ -41,11 +41,19 @@ public class InsertionEfficiencyTest<E> {
         finish = System.currentTimeMillis();
         long time2 = finish - start;
 
+        start = System.currentTimeMillis();
+        for (String str : randomStrings) {
+            simpleHashSet.insert(str);
+        }
+        finish = System.currentTimeMillis();
+        long time3 = finish - start;
+
         System.out.println("\n");
         System.out.println("Adding strings in collections: \n");
         System.out.println("Number of strings added: " + numberOfStringsToAdd + "\n");
         System.out.println("Time for SimpleLinkedSet add: " + time1);
-        System.out.println("Time for SimpleArraySet add2: " + time2);
+        System.out.println("Time for SimpleArraySet add: " + time2);
+        System.out.println("Time for SimpleHashSet add: " + time3);
     }
 }
 /**
