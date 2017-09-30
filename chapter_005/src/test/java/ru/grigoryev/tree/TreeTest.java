@@ -46,6 +46,48 @@ public class TreeTest {
                 System.getProperty("line.separator"))));
     }
     /**
+     * Testing isBinary() method.
+     */
+    @Test
+    public void whenNotBinaryThenFalse() {
+        Tree<Integer> tree = new Tree<>();
+
+        tree.add(tree.getRoot(), 1);
+        tree.add(1, 2);
+        tree.add(1, 3);
+        tree.add(2, 4);
+        tree.add(2, 5);
+        tree.add(2, 6);
+        tree.add(3, 7);
+        tree.add(7, 8);
+        tree.add(7, 9);
+        tree.add(20, 1);
+        tree.add(3, 6);
+
+        boolean result = tree.isBinary();
+
+        assertThat(result, is(false));
+    }
+    /**
+     * Testing isBinary() method.
+     */
+    @Test
+    public void whenBinaryThenTrue() {
+        Tree<Integer> tree = new Tree<>();
+
+        tree.add(tree.getRoot(), 1);
+        tree.add(1, 2);
+        tree.add(1, 3);
+        tree.add(2, 4);
+        tree.add(2, 5);
+        tree.add(3, 7);
+        tree.add(7, 8);
+        tree.add(7, 9);
+        boolean result = tree.isBinary();
+
+        assertThat(result, is(true));
+    }
+    /**
      * Testing next() method.
      */
     @Test

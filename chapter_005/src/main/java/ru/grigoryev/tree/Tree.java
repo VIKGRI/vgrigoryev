@@ -111,6 +111,38 @@ public class Tree<E extends Comparable<E>> implements SimpleTree<E> {
         return this.root == null ? null : root.value;
     }
 
+    /**
+     * Identifies whether the tree is binary or not.
+     * @param root root of the tree
+     * @return true if the tree is binary
+     */
+    private boolean isBinarySubtree(Node<E> root) {
+        boolean isBin =  true;
+        if (root.childen != null) {
+            isBin = root.childen.size() <= 2;
+            if (isBin) {
+                for (Node<E> node : root.childen) {
+                    isBin = this.isBinarySubtree(node);
+                    if (!isBin) {
+                        break;
+                    }
+                }
+            }
+        }
+        return  isBin;
+    }
+
+    /**
+     * Identifies whether the tree is binary or not.
+     * @return true if the tree is binary
+     */
+    public boolean isBinary() {
+        if (this.root == null) {
+            return true;
+        }
+        return  isBinarySubtree(this.root);
+    }
+
     @Override
     public Iterator<E> iterator() {
         LinkedList<E> listView = new LinkedList<>();
