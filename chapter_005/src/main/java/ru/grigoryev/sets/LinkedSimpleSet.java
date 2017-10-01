@@ -30,10 +30,8 @@ public class LinkedSimpleSet<E> implements Iterable<E> {
      * Default constructor.
      */
     public LinkedSimpleSet() {
-        this.head = new Node<E>();
-        this.head.setNext(null);
-        this.head.setPrivious(null);
-        this.tail = head;
+        this.head = null;
+        this.tail = null;
     }
 
     /**
@@ -55,10 +53,15 @@ public class LinkedSimpleSet<E> implements Iterable<E> {
         }
         if (!doesContain) {
             Node<E> node = new Node<>(value);
-            tail.setNext(node);
-            node.setPrivious(tail);
-            tail = node;
-            size++;
+            if (this.size == 0) {
+                this.head = node;
+                this.tail = this.head;
+            } else {
+                this.tail.setNext(node);
+                node.setPrivious(tail);
+                this.tail = node;
+            }
+            this.size++;
         }
     }
     /**
