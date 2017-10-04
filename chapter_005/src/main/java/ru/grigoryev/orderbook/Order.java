@@ -144,7 +144,7 @@ public class Order {
      * @param volume amount of books in the order
      */
     public void setVolume(int volume) {
-        if (volume > 0) {
+        if (volume >= 0) {
             this.volume = volume;
         }
     }

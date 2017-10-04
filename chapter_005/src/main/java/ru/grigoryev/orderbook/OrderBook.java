@@ -80,11 +80,12 @@ public class OrderBook {
            books.add(item);
            Thread t = new Thread(item);
            t.start();
-           try {
-               t.join();
-           } catch (InterruptedException iex) {
-               iex.printStackTrace();
-           }
+        }
+        boolean goOn = false;
+        while (!goOn) {
+            if (Thread.activeCount() < 3) {
+                goOn = true;
+            }
         }
         for (ParticularBookInfo p : books) {
             System.out.println(p);
@@ -168,6 +169,7 @@ public class OrderBook {
                             } else {
                                 it.remove();
                                 order.setVolume(0);
+                                break;
                             }
                         }
                     }
@@ -191,6 +193,7 @@ public class OrderBook {
                             } else {
                                 it.remove();
                                 order.setVolume(0);
+                                break;
                             }
                         }
                     }
