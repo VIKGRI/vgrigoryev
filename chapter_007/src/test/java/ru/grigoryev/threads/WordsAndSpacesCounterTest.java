@@ -16,7 +16,7 @@ public class WordsAndSpacesCounterTest {
      * Method for testing count method.
      */
     @Test
-    public void whenAddUserThenPassportMatches() {
+    public void whenCountWordsAndSpacesThenAmountMatches() {
 
         WordsAndSpacesCounter counter = new WordsAndSpacesCounter();
         Pair<Integer, Integer> result = counter.count("text.txt");

@@ -66,7 +66,7 @@ public class Pair<K, V> {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (o == null || !(o instanceof Pair<?, ?>)) {
             return false;
         }
 

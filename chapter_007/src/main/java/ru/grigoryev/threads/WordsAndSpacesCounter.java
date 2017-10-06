@@ -7,15 +7,18 @@ import java.util.ArrayList;
 import static java.lang.Thread.currentThread;
 
 /**
- *
+ *Class for counting words and spaces.
+ *@author vgrigoryev
+ *@since 05.10.2017
+ *@version 1
  */
 public class WordsAndSpacesCounter {
     /**
-     *
+     * Number of words.
      */
     private int words = 0;
     /**
-     *
+     * Number of spaces.
      */
     private int spaces = 0;
 
