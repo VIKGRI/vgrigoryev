@@ -15,7 +15,12 @@ public class TimerCharCounter {
     public int count(String textPath, long limitTime) {
         CountChar counter = new CountChar(textPath);
         Thread countChar = new Thread(counter, "countChar");
-        Thread timer = new Thread(new Time(limitTime));
+        Thread timer = new Thread(new Time(limitTime)); try {
+            timer.join();
+            countChar.join();
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
         timer.start();
         countChar.start();
         while (countChar.isAlive()) {
@@ -26,12 +31,7 @@ public class TimerCharCounter {
         if (!countChar.isAlive() && timer.isAlive()) {
             timer.interrupt();
         }
-        try {
-            timer.join();
-            countChar.join();
-        } catch (InterruptedException ex) {
-            ex.printStackTrace();
-        }
+
         System.out.println("metod: " + counter.getCounter());
         return counter.getCounter();
     }

@@ -62,10 +62,8 @@ public class CountChar implements Runnable {
                         System.out.println(Thread.currentThread().getName() + ": program was interrupted!");
                         return;
                     }
-                    synchronized (this) {
-                        this.counter++;
-                        System.out.println(currentThread().getName() + ": " + this.counter);
-                    }
+                    this.counter++;
+                    System.out.println(currentThread().getName() + ": " + this.counter);
                 }
             }
         }
