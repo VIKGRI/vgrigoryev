@@ -107,17 +107,9 @@ public class WordsAndSpacesCounterExtended {
                 System.out.println("Time is up!");
                 if (wordsCounter.isAlive()) {
                     wordsCounter.interrupt();
-                    if (spacesCounter.isAlive()) {
-                        spacesCounter.interrupt();
-                    }
-                    break;
                 }
                 if (spacesCounter.isAlive()) {
                     spacesCounter.interrupt();
-                    if (wordsCounter.isAlive()) {
-                        wordsCounter.interrupt();
-                    }
-                    break;
                 }
             }
         }
