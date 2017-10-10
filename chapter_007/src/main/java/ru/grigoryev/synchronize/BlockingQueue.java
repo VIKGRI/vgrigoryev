@@ -49,7 +49,7 @@ public class BlockingQueue<E> {
         if (this.queue.size() == 0) {
             notifyAll();
         }
-        System.out.println("Producer " + Thread.currentThread().getName() + " is putting");
+        //System.out.println("Producer " + Thread.currentThread().getName() + " is putting");
         this.queue.add(element);
     }
 
@@ -69,7 +69,7 @@ public class BlockingQueue<E> {
         if (this.queue.size() == this.limit) {
             notifyAll();
         }
-        System.out.println("Customer " + Thread.currentThread().getName() + " is taking");
+        //System.out.println("Customer " + Thread.currentThread().getName() + " is taking");
         return this.queue.remove(0);
     }
 }
