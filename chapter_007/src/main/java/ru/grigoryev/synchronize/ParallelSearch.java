@@ -54,6 +54,7 @@ public class ParallelSearch {
     /**
      * Searches the specified text in the directory tree
      * starting with root in the files with extensions specified in the exts.
+     *
      * @param root root directory where to find matches
      * @param text template text
      * @param exts available extensions
@@ -63,48 +64,58 @@ public class ParallelSearch {
         File[] files = new File(root).listFiles();
         if (files != null) {
             for (File file : files) {
-                Runnable fileSearcher = new Runnable() {
-                    private File threadFile = file;
-                    @Override
-                    public void run() {
-                        if (threadFile.isFile()) {
-                            if (threadFile.canRead()) {
-                                String[] tokens = threadFile.getName().split("\\.");
-                                if (exts.contains(tokens[tokens.length - 1])) {
-                                    try (BufferedReader reader = new BufferedReader(new FileReader(threadFile))) {
-                                        String line;
-                                        StringBuilder builder = new StringBuilder();
-                                        builder.append(" ");
-                                        while ((line = reader.readLine()) != null) {
-                                            builder.append(line + " ");
-                                        }
-                                        String[] parse = builder.toString().split(searchText);
-                                        if (parse.length >= 2) {
-                                            add(threadFile.getAbsolutePath());
-                                        }
-                                    } catch (Exception ex) {
-                                        ex.printStackTrace();
-                                    }
-                                }
-                            }
-                        } else {
-                            search(threadFile.getAbsolutePath(), searchText, exts);
-                        }
-                        lock.lock();
-                        try {
-                            allDirectoriesExplored.signalAll();
-                        } finally {
-                            lock.unlock();
+                File threadFile = file;
+                boolean isExtensionSuitable = false;
+                if (threadFile.isFile()) {
+                    for (String ext : exts) {
+                        if (threadFile.getName().endsWith(ext)) {
+                            isExtensionSuitable = true;
+                            break;
                         }
                     }
-                };
-                Thread t = new Thread(fileSearcher);
-                t.start();
-                lock.lock();
-                try {
-                    this.threads.add(t);
-                } finally {
-                    lock.unlock();
+                }
+                if (isExtensionSuitable && threadFile.canRead()) {
+                    Runnable fileSearcher = new Runnable() {
+                        @Override
+                        public void run() {
+                            try (BufferedReader reader = new BufferedReader(new FileReader(threadFile))) {
+                                String line;
+                                StringBuilder builder = new StringBuilder();
+                                builder.append(" ");
+                                while ((line = reader.readLine()) != null) {
+                                    builder.append(line + " ");
+                                }
+                                String[] parse = builder.toString().split(searchText);
+                                if (parse.length >= 2) {
+                                    add(threadFile.getAbsolutePath());
+                                }
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
+                            }
+                            lock.lock();
+                            try {
+                                allDirectoriesExplored.signalAll();
+                            } finally {
+                                lock.unlock();
+                            }
+                        }
+                    };
+                    Thread t = new Thread(fileSearcher);
+                    t.start();
+                    lock.lock();
+                    try {
+                        this.threads.add(t);
+                    } finally {
+                        lock.unlock();
+                    }
+                } else if (threadFile.isDirectory()) {
+                    search(threadFile.getAbsolutePath(), searchText, exts);
+                    lock.lock();
+                    try {
+                        allDirectoriesExplored.signalAll();
+                    } finally {
+                        lock.unlock();
+                    }
                 }
             }
         }
@@ -113,6 +124,7 @@ public class ParallelSearch {
     /**
      * Searches the specified text in the directory tree
      * starting with root in the files with extensions specified in the exts.
+     *
      * @param root root directory where to find matches
      * @param text template text
      * @param exts available extensions
@@ -140,6 +152,7 @@ public class ParallelSearch {
 
     /**
      * Adds file path in the result list.
+     *
      * @param filePath specified file path.
      */
     private void add(String filePath) {
@@ -153,6 +166,7 @@ public class ParallelSearch {
 
     /**
      * Returns the amount of alive threads.
+     *
      * @return the number of alive threads
      */
     private int aliveThreads() {
