@@ -15,7 +15,7 @@ public class ProducerCustomerTest {
     @Test
     public void whenProducerWritesSomethingThenCustomerReadsIt() {
         BlockingQueue<String> dataBase = new BlockingQueue<>(10);
-        Thread producer = new Thread(new Producer(dataBase));
+        Thread producer = new Thread(new Producer(dataBase, 15));
         Thread customer = new Thread(new Customer(dataBase));
         producer.start();
         customer.start();
