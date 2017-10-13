@@ -23,8 +23,8 @@ public class Lock {
             } catch (InterruptedException ex) {
                 ex.printStackTrace();
             }
-            this.isLocked = true;
         }
+        this.isLocked = true;
     }
 
     /**
