@@ -49,7 +49,7 @@ public class Pair<K, V> {
      * First value's setter.
      * @param first first value
      */
-    public void seFirst(K first) {
+    public void setFirst(K first) {
         this.first = first;
     }
 
