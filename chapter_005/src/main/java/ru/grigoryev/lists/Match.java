@@ -25,21 +25,19 @@ public class Match {
         char[] a = left.toCharArray();
         char[] b = right.toCharArray();
 
-        Map<Character, Integer> rightStr = new LinkedHashMap<>();
-        for (Character val: b) {
-            if (rightStr.containsKey(val)) {
-                rightStr.put(val, rightStr.get(val) + 1);
+        Map<Character, Integer> leftStr = new LinkedHashMap<>();
+        for (Character key: a) {
+            if (leftStr.containsKey(key)) {
+                leftStr.put(key, leftStr.get(key) + 1);
             } else {
-                rightStr.put(val, 1);
+                leftStr.put(key, 1);
             }
         }
-        for (Character val: a) {
-                rightStr.computeIfPresent(val, (k, v) -> v - 1);
-        }
-        for (Integer val: rightStr.values()) {
-            if (val > 0) {
-                return  false;
-            }
+        for (Character key: b) {
+                leftStr.computeIfPresent(key, (k, v) -> v - 1);
+                if (leftStr.containsKey(key) && leftStr.get(key) < 0) {
+                    return false;
+                }
         }
         return true;
     }
