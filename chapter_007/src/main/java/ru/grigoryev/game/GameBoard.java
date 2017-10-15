@@ -52,9 +52,19 @@ public class GameBoard {
      */
     public void unlockCell(int row, int column) {
         this.checkBounbs(row, column);
-        if (this.board[row][column].isLocked()) {
+        if (this.board[row][column].isLocked() && this.board[row][column].isHeldByCurrentThread()) {
             this.board[row][column].unlock();
         }
+    }
+
+    /**
+     * Queries whether the cell is locked or not.
+     * @param row specified cell row
+     * @param column specified cell column
+     * @return true if the cell is locked
+     */
+    public boolean isCellLocked(int row, int column) {
+        return this.board[row][column].isLocked();
     }
 
     /**

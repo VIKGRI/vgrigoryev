@@ -12,6 +12,10 @@ import ru.grigoryev.threads.Pair;
  */
 public abstract class Hero {
     /**
+     * Game's hero type and name.
+     */
+    private String heroName;
+    /**
      * Board hero to move on.
      */
     private final GameBoard board;
@@ -22,16 +26,20 @@ public abstract class Hero {
     /**
      * Time to keep trying to locate the new cell.
      */
-    private static final int DELAY_TIME = 500;
+    private final int delayTime;
     /**
      * Hero of the game.
-     * @param board board hero where to move.
+     * @param board board hero where to move
+     * @param heroName hero type and name
      * @param row specified row
      * @param column specified column
+     * @param delayTime time to keep trying to locate the new cell
      */
-    public Hero(GameBoard board, int row, int column) {
+    public Hero(GameBoard board, String heroName, int row, int column, int delayTime) {
         this.board = board;
+        this.heroName = heroName;
         this.location = new Pair<>(row, column);
+        this.delayTime = delayTime;
     }
 
     /**
@@ -42,7 +50,7 @@ public abstract class Hero {
         int row = this.location.getFirst();
         int column = this.location.getSecond();
         if (row - 1 >= 0) {
-            if (this.board.tryLockCell(row - 1, column, DELAY_TIME)) {
+            if (this.board.tryLockCell(row - 1, column, this.delayTime)) {
                 this.board.unlockCell(row, column);
                 this.location.setFirst(row - 1);
                 this.gameObserver("up", row, column);
@@ -61,7 +69,7 @@ public abstract class Hero {
         int row = this.location.getFirst();
         int column = this.location.getSecond();
         if (row + 1 < this.board.getBoardSize()) {
-            if (this.board.tryLockCell(row + 1, column, DELAY_TIME)) {
+            if (this.board.tryLockCell(row + 1, column, this.delayTime)) {
                 this.board.unlockCell(row, column);
                 this.location.setFirst(row + 1);
                 this.gameObserver("down", row, column);
@@ -80,7 +88,7 @@ public abstract class Hero {
         int row = this.location.getFirst();
         int column = this.location.getSecond();
         if (column - 1 >= 0) {
-            if (this.board.tryLockCell(row, column - 1, DELAY_TIME)) {
+            if (this.board.tryLockCell(row, column - 1, this.delayTime)) {
                 this.board.unlockCell(row, column);
                 this.location.setSecond(column - 1);
                 this.gameObserver("left", row, column);
@@ -99,7 +107,7 @@ public abstract class Hero {
         int row = this.location.getFirst();
         int column = this.location.getSecond();
         if (column + 1 < this.board.getBoardSize()) {
-            if (this.board.tryLockCell(row, column + 1, DELAY_TIME)) {
+            if (this.board.tryLockCell(row, column + 1, this.delayTime)) {
                 this.board.unlockCell(row, column);
                 this.location.setSecond(column + 1);
                 this.gameObserver("right", row, column);
@@ -117,7 +125,7 @@ public abstract class Hero {
      * @param oldColumn column before operation
      */
     private void gameObserver(String operation, int oldRow, int oldColumn) {
-        System.out.println("The hero moved " + operation + " from " + "row: " + oldRow + " column: " + oldColumn
+        System.out.println(this.heroName + " moved " + operation + " from " + "row: " + oldRow + " column: " + oldColumn
                 + " to " + "row: " + this.location.getFirst() + " column: " + this.location.getSecond());
     }
 }

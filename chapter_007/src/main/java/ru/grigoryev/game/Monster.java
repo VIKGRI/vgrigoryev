@@ -1,52 +1,55 @@
 package ru.grigoryev.game;
 
 /**
- * Bomberman - hero in the game.
+ * Monster - bomberman's enemy in the game.
  *
  * @author vgrigoryev
  * @version 1
- * @since 14.10.2017
+ * @since 15.10.2017
  */
-public class Bomberman extends Hero implements RandomMove, Runnable {
+public class Monster extends Hero implements RandomMove, Runnable {
+    /**
+     * Bomberman's executing thread in the current game.
+     */
+    private final Thread bomberman;
     /**
      * Time to keep trying to locate the new cell.
      */
-    private static final int KEEP_TRYING_TIME = 500;
+    private static final int KEEP_TRYING_TIME = 5000;
     /**
      * Time to delay before moving further.
      */
     private static final int DELAY = 1000;
     /**
-     * Number of movings.
+     * Number of created monster.
      */
-    private int moveIterations = 50;
-
-    /**
-     * Sets number of movings.
-     * @param moveIterations number of movings
-     */
-    public void setMoveIterations(int moveIterations) {
-        if (moveIterations >= 0) {
-            this.moveIterations = moveIterations;
-        }
-    }
+    private static int monsterNum = 0;
 
     /**
      * Hero of the game.
      *
-     * @param board  board hero where to move.
+     * @param board board hero where to move.
+     * @param bomberman bomberman in the current game
      * @param row specified row
      * @param column specified column
      */
-    public Bomberman(GameBoard board, int row, int column) {
-        super(board, "Bomberman", row, column, KEEP_TRYING_TIME);
+    public Monster(GameBoard board, Thread bomberman, int row, int column) {
+        super(board, "Monster #" + Monster.getNumber(), row, column, KEEP_TRYING_TIME);
+        this.bomberman = bomberman;
+    }
+
+    /**
+     * Gets the number of monster created.
+     * @return number of monster created
+     */
+    private static synchronized int getNumber() {
+        return monsterNum++;
     }
 
     @Override
     public void run() {
-        while (this.moveIterations > 0) {
+        while (this.bomberman.isAlive()) {
             this.move();
-            this.moveIterations--;
             try {
                 Thread.sleep(DELAY);
             } catch (InterruptedException ex) {
@@ -74,8 +77,8 @@ public class Bomberman extends Hero implements RandomMove, Runnable {
                 case 3:
                     isSucceeded = this.moveRight();
                     break;
-                 default:
-                     System.out.println("Unknown operation");
+                default:
+                    System.out.println("Unknown operation");
             }
         }
     }

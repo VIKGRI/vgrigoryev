@@ -13,8 +13,8 @@ public class GameTest {
      * Testing hero's movings.
      */
     @Test
-    public void whenStartGameThenHeroMoves() {
-        Game game = new Game(10);
+    public void whenStartGameThenCharactersMove() {
+        Game game = new Game(10, Level.BEGINNER);
         game.start(60);
     }
 }
