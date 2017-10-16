@@ -1,6 +1,7 @@
 CREATE DATABASE request_tracker;
 
 --connect to request_tracker
+\c request_tracker
  
 CREATE TYPE privileges AS ENUM ('insert', 'delete', 'update', 'create', 'drop', 'process request');
 
