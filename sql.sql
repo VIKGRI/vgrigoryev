@@ -3,17 +3,54 @@ CREATE DATABASE request_tracker;
 --connect to request_tracker
 \c request_tracker
  
-CREATE TYPE privileges AS ENUM ('insert', 'delete', 'update', 'create', 'drop', 'process request');
+
+CREATE TABLE privileges (
+    name character varying(30),
+    description text,
+    PRIMARY KEY (name)
+);
+
+INSERT INTO privileges(name, description) VALUES 
+('insert', 'description of insert'),
+('delete', 'description of delete'),
+('update', 'description of update'),
+('create', 'description of create'),
+('drop', 'description of drop'),
+('process request', 'description of process request');
+
 
 CREATE TABLE roles (
     name character varying(30),
-    privilege privileges,
-    PRIMARY KEY (name, privilege)
+    description text,
+    PRIMARY KEY (name)
 );
+
+INSERT INTO roles(name, description) VALUES 
+('admin', 'description of admin'),
+('manager', 'description of manager'),
+('employee', 'description of employee');
+
+--ассоциативная таблица для реализации связи многие-ко-многим между ролями и привилегиями
+CREATE TABLE roles_privileges (
+    role_name character varying(30) REFERENCES roles(name),
+    priv_name character varying(30) REFERENCES privileges(name),
+    PRIMARY KEY (role_name, priv_name)
+);
+
+
+INSERT INTO roles_privileges(role_name, priv_name) VALUES 
+('admin', 'insert'),
+('admin', 'create'),
+('admin', 'drop'),
+('admin', 'update'),
+('manager', 'insert'),
+('manager', 'update'),
+('employee', 'process request');
 
 CREATE TABLE users (
     id  integer PRIMARY KEY,
     name character varying(30),
+	role character varying(30) REFERENCES roles(name),
 	login character varying(30),
 	password character varying(30),
 	create_date timestamp
@@ -43,19 +80,10 @@ CREATE TABLE comments (
 	request_id integer REFERENCES requests (id)
 );
 
-INSERT INTO roles(name, privilege) VALUES 
-('admin', 'insert'),
-('admin', 'create'),
-('admin', 'drop'),
-('admin', 'update'),
-('manager', 'insert'),
-('manager', 'update'),
-('employee', 'process request');
-
-INSERT INTO users (id, name, login, password, create_date) VALUES
-(1, 'Иван Петров', 'ipetrov', '456789', '1999-01-08 04:05:06'),
-(2, 'Алексей Кетов', 'aketov', '789fdfd', '1999-02-09 07:05:08'),
-(3, 'Сергей Попов', 'spopov', 'dfs54588', '1999-11-10 05:05:06');
+INSERT INTO users (id, name, role, login, password, create_date) VALUES
+(1, 'Иван Петров', 'admin', 'ipetrov', '456789', '1999-01-08 04:05:06'),
+(2, 'Алексей Кетов', 'employee', 'aketov', '789fdfd', '1999-02-09 07:05:08'),
+(3, 'Сергей Попов', 'manager', 'spopov', 'dfs54588', '1999-11-10 05:05:06');
 
 INSERT INTO requests (id, description, category, state, user_id) VALUES
 (1, 'fix bug#1', 'low', 'new', 1),
