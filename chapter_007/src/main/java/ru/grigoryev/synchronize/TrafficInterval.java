@@ -11,7 +11,7 @@ import java.util.concurrent.Callable;
  *@since 23.10.2017
  *@version 1
  */
-public class TrafficInterval implements Callable<TrafficInterval> {
+public class TrafficInterval {
     /**
      * Interval's start.
      */
@@ -140,11 +140,6 @@ public class TrafficInterval implements Callable<TrafficInterval> {
             }
         }
         return this;
-    }
-
-    @Override
-    public TrafficInterval call() throws Exception {
-        return this.computeTrafficIntervals();
     }
 
     @Override
