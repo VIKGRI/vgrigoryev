@@ -14,9 +14,6 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Properties;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * Class represents database which stores information about
  * items in the tracker.

@@ -141,6 +141,7 @@ public class WebDataAnalyzer extends TimerTask {
                 }
             }
         }
+
         // Deletes vacancies with JavaScript only
         try {
             dbmanager.filterVacancies("deleteJavaScript.sql");
