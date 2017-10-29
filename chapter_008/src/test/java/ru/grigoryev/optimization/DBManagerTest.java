@@ -1,8 +1,6 @@
 package ru.grigoryev.optimization;
 
 import org.junit.Test;
-
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.core.Is.is;
@@ -19,15 +17,18 @@ public class DBManagerTest {
     /**
      * Number to compute in the test.
      */
-    private static final int NUMBER = 1000;
+    private static final int NUMBER = 100;
     /**
      * Method for testing DBManager's methods.
      */
     @Test
     public void whenComputeIntervalFromOneToOneHundredThenResultIsEqualToExpectedValue() {
-        DBManager dbManager = new DBManager();
-        dbManager.setNumber(NUMBER);
-        dbManager.setUrl("jdbc:sqlite:test.db");
+        // Using DOM for xml building and parsing
+        //DBManager dbManager = new DBManager("jdbc:sqlite:test.db", NUMBER, new DomXmlParser());
+
+        // Using StAX for XML building and parsing.
+        DBManager dbManager = new DBManager("jdbc:sqlite:test.db", NUMBER, new StaxXmlParser());
+
         List<String> resultSet = dbManager.connectAndPopulateDB();
         dbManager.constructXml(resultSet, "1.xml");
         dbManager.transformXml("1.xml", "2.xml", "style.xsl");
@@ -37,7 +38,6 @@ public class DBManagerTest {
         for (int i = 1; i <= NUMBER; i++) {
             expect += i;
         }
-
         assertThat(result, is(expect));
     }
 }
