@@ -3,8 +3,16 @@
         <servlet-name>EchoServlet</servlet-name>
         <servlet-class>grigoryev.servlets.EchoServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>UserServlet</servlet-name>
+        <servlet-class>grigoryev.servlets.UsersServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>EchoServlet</servlet-name>
         <url-pattern>/echo</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UserServlet</servlet-name>
+        <url-pattern>/PerformUserRequest</url-pattern>
     </servlet-mapping>
 </web-app>
