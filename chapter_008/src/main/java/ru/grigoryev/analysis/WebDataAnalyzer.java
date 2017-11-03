@@ -53,9 +53,9 @@ public class WebDataAnalyzer extends TimerTask {
     /**
      * Constructor.
      *
-     * @throws IOException thrown when file reading problems occur
+     * @throws IOException  thrown when file reading problems occur
      * @throws SQLException thrown when problems related to executing
-     * database sql statements occur
+     *                      database sql statements occur
      */
     public WebDataAnalyzer(String url) throws IOException, SQLException {
         if (url != null) {
@@ -76,15 +76,21 @@ public class WebDataAnalyzer extends TimerTask {
             if (lastUpdate == null) {
                 lastUpdate = new Timestamp(System.currentTimeMillis());
                 Calendar firstDayOfYear = Calendar.getInstance();
-                firstDayOfYear.set(2017, 0, 1, 0, 0, 1);
+                firstDayOfYear.set(2017, Calendar.JANUARY, 1, 0, 0, 1);
                 lastUpdate = new Timestamp(firstDayOfYear.getTimeInMillis());
             }
             this.readWebPage(this.url);
-            dbmanager.closeConnection();
-
+            dbmanager.commitTransaction();
             System.out.println("Web site is read, database is updated");
         } catch (IOException | SQLException e) {
+            dbmanager.rollbackTransaction(LOG);
             LOG.error(e.getMessage(), e);
+        } finally {
+            try {
+                dbmanager.closeConnection();
+            } catch (SQLException e) {
+                LOG.error(e.getMessage(), e);
+            }
         }
     }
 
@@ -273,7 +279,6 @@ public class WebDataAnalyzer extends TimerTask {
         Element table2 = document.select("table").get(3);
         Element td = table2.select("td").get(0);
         Element page = table2.select("b").first();
-        String nextPageUrl = td.children().get(page.elementSiblingIndex() + 1).attr("href");
-        return nextPageUrl;
+        return td.children().get(page.elementSiblingIndex() + 1).attr("href");
     }
 }

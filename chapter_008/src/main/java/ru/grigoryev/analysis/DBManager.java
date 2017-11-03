@@ -1,5 +1,7 @@
 package ru.grigoryev.analysis;
 
+import org.slf4j.Logger;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -102,15 +104,46 @@ public class DBManager {
         String username = properties.getProperty("jdbc.username");
         String password = properties.getProperty("jdbc.password");
         this.connection = DriverManager.getConnection(url, username, password);
+        this.connection.setAutoCommit(false);
     }
 
     /**
      * Closes database connection.
+     *
+     * @throws SQLException thrown if problems related to executing query occur
      */
     public void closeConnection() throws SQLException {
         if (connection != null) {
             connection.close();
         }
+    }
+
+    /**
+     * Rollbacks transaction. Transaction is considered as
+     * reading all new rows from the web site.
+     *
+     */
+    public void rollbackTransaction(Logger logger) {
+        try {
+            if (this.connection != null) {
+                this.connection.rollback();
+            }
+        } catch (SQLException e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Commits transaction. Transaction is considered as
+     * reading all new rows from the web site.
+     *
+     * @throws SQLException thrown if problems related to executing query occur
+     */
+    public void commitTransaction() throws SQLException {
+        if (this.connection != null) {
+            this.connection.commit();
+        }
+        this.connection.setAutoCommit(true);
     }
 
     /**
@@ -121,7 +154,7 @@ public class DBManager {
      */
     public void insertAuthor(String nickName, String authorInfoReference) throws SQLException {
         try (PreparedStatement insert =
-                     connection.prepareStatement(INSERT_AUTHOR);) {
+                     connection.prepareStatement(INSERT_AUTHOR)) {
             insert.setString(1, nickName);
             insert.setString(2, authorInfoReference);
             insert.executeUpdate();
@@ -139,7 +172,7 @@ public class DBManager {
     public void insertVacancy(String vacancyMessage, String descriptionReference,
                                 String author, Timestamp date) throws SQLException {
         try (PreparedStatement insert =
-                     connection.prepareStatement(INSERT_VACANCY);) {
+                     connection.prepareStatement(INSERT_VACANCY)) {
             insert.setString(1, vacancyMessage);
             insert.setString(2, descriptionReference);
             insert.setString(3, author);
