@@ -10,17 +10,15 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Servlet which provides methods
  * for interacting with database which
  * contains users.
  *
- *@author vgrigoryev
- *@since 02.11.2017
- *@version 1
+ * @author vgrigoryev
+ * @version 1
+ * @since 02.11.2017
  */
 public class UsersServlet extends HttpServlet {
     /**
@@ -37,6 +35,7 @@ public class UsersServlet extends HttpServlet {
         this.dataManager = new UserDataBaseManager();
         try {
             this.dataManager.connectDataBase();
+            this.dataManager.createTable();
         } catch (SQLException e) {
             LOG.error(e.getMessage(), e);
         } catch (IOException e) {
@@ -55,37 +54,53 @@ public class UsersServlet extends HttpServlet {
         }
     }
 
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String login = req.getParameter("login");
-        String actionType = req.getParameter("actionType");
-        List<User> result = null;
+    /**
+     * Writes to the HttpResponse html for initial form
+     * and result of operation.
+     *
+     * @param resp HttpResponse
+     * @param operationResult operation result
+     */
+    public void writeResponse(HttpServletResponse resp, String operationResult) {
         try {
-            if (actionType.equals("selectAll")) {
-                result = this.dataManager.selectAll();
-            } else {
-                User user = this.dataManager.selectByLogin(login);
-                if (user != null) {
-                    result = new ArrayList<>();
-                    result.add(user);
-                }
-            }
             resp.setContentType("text/html");
             PrintWriter writer = resp.getWriter();
-            if (result != null) {
-                writer.println("<table style=\"width:100%\">");
-                writer.println("<tr>"
-                        + "    <th>name</th>" + "    <th>login</th>"
-                        + "    <th>email</th>" + "    <th>create date</th>" + "  </tr>");
-                for (User item : result) {
-                    writer.println("<tr>"
-                            + "    <th>" + item.getName() + "</th>" + "<th>" + item.getLogin() + "</th>"
-                            + "    <th>" + item.getEmail() + "</th>" + "<th>" + item.getCreateDate() + "</th>" + "  </tr>");
-                }
-            } else {
-                writer.println("User is not found");
+            writer.println("<html>" +
+                    "<head>" +
+                    "    <title>User Managing Page</title>" +
+                    "</head>\n" +
+                    "<body>\n" +
+                    "<h1 align=\"center\">User Managing Page</h1>" +
+                    "<form method=\"post\"" +
+                    "      action=\"PerformUserRequest\">" +
+                    "    Select type of action\n" +
+                    "    <p>" +
+                    "        Name:<br>\n" +
+                    "        <input type=\"text\" name=\"name\"><br>" +
+                    "        Login:<br>\n" +
+                    "        <input type=\"text\" name=\"login\"><br>" +
+                    "        Email:<br>\n" +
+                    "        <input type=\"text\" name=\"email\"><br>" +
+                    "        Action:\n" +
+                    "        <select name=\"actionType\" size=\"1\">" +
+                    "            <option value=\"insert\">INSERT</option>" +
+                    "            <option value=\"update\">UPDATE</option>" +
+                    "            <option value=\"delete\">DELETE</option>" +
+                    "            <option value=\"select\">SELECT</option>" +
+                    "            <option value=\"selectAll\">SELECT ALL</option>" +
+                    "        </select>" +
+                    "        <br><br>" +
+                    "    <div style=\"text-align: center;\">" +
+                    "        <input type=\"submit\">" +
+                    "    </div>" +
+                    "    </p>" +
+                    "</form>" +
+                    "</body>" +
+                    "</html>");
+            if (operationResult != null) {
+                writer.println(operationResult);
             }
-        } catch (SQLException e) {
+        } catch (IOException e) {
             LOG.error(e.getMessage(), e);
         }
     }
@@ -96,58 +111,11 @@ public class UsersServlet extends HttpServlet {
         String login = req.getParameter("login");
         String email = req.getParameter("email");
         String actionType = req.getParameter("actionType");
-        try {
-            switch (actionType) {
-                case "insert":
-                    this.dataManager.insertUser(new User(name, login, email, System.currentTimeMillis()));
-                    resp.setContentType("text/html");
-                    PrintWriter writer = resp.getWriter();
-                    writer.println("User is added");
-                    break;
-                case "update":
-                    this.doPut(req, resp);
-                    break;
-                case "delete":
-                    this.doDelete(req, resp);
-                    break;
-                case "select":
-                case "selectAll":
-                    this.doGet(req, resp);
-                    break;
-                default:
-                    LOG.info("No action!");
-                    break;
-            }
-        } catch (SQLException e) {
-            LOG.error(e.getMessage(), e);
-        }
-    }
 
-    @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String name = req.getParameter("name");
-        String login = req.getParameter("login");
-        String email = req.getParameter("email");
-        try {
-            this.dataManager.updateUser(new User(name, login, email, 0L));
-            resp.setContentType("text/html");
-            PrintWriter writer = resp.getWriter();
-            writer.println("User " + login + " is updated");
-        } catch (SQLException e) {
-            LOG.error(e.getMessage(), e);
-        }
-    }
-
-    @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String login = req.getParameter("login");
-        try {
-            this.dataManager.deleteUser(new User("name", login, "email", 0L));
-            resp.setContentType("text/html");
-            PrintWriter writer = resp.getWriter();
-            writer.println("User " + login + " is deleted");
-        } catch (SQLException e) {
-            LOG.error(e.getMessage(), e);
-        }
+        String operationResult = new ActionDispatcher(this.dataManager, this.LOG).init().perform(
+                ActionDispatcher.toAction(actionType),
+                new User(name, login, email, System.currentTimeMillis())
+        );
+        this.writeResponse(resp, operationResult);
     }
 }

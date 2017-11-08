@@ -1,7 +1,13 @@
 package grigoryev.servlets;
 
-import java.io.*;
-import java.sql.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -50,6 +56,7 @@ public class UserDataBaseManager {
      *
      * @throws IOException  thrown if problems with file reading occur
      * @throws SQLException thrown if problems with database connection occur
+     * @throws ClassNotFoundException thrown if problems with driver class searching occur
      */
     public void connectDataBase() throws SQLException, IOException, ClassNotFoundException {
         // Setting connection to database
@@ -68,7 +75,15 @@ public class UserDataBaseManager {
         String password = properties.getProperty("jdbc.password");
         System.out.println(password);
         this.connection = DriverManager.getConnection(url, username, password);
+    }
 
+    /**
+     * Creates table for storing users
+     * if it doesn't exist already.
+     *
+     * @throws SQLException thrown if problems with database connection occur
+     */
+    public void createTable() throws SQLException {
         String request = "CREATE TABLE IF NOT EXISTS users"
                 + "(name VARCHAR(50), login VARCHAR(50) PRIMARY KEY NOT NULL,"
                 + "email VARCHAR(50), create_time TIMESTAMP )";
@@ -86,33 +101,51 @@ public class UserDataBaseManager {
     }
 
     /**
-     * Insert user in the database.
+     * Inserts user in the database.
      *
      * @param user specified user
+     * @return information whether operation succeeds or not
+     * @throws SQLException thrown if problems with database connection occur
      */
-    public void insertUser(User user) throws SQLException {
+    public String insertUser(User user) throws SQLException {
         try (PreparedStatement insert =
                      this.connection.prepareStatement(INSERT_USER)) {
             insert.setString(1, user.getName());
             insert.setString(2, user.getLogin());
             insert.setString(3, user.getEmail());
             insert.setTimestamp(4, new Timestamp(user.getCreateDate()));
-            insert.executeUpdate();
+            int result = insert.executeUpdate();
+            String operationResult;
+            if(result != 0) {
+                operationResult = "User with " + user.getLogin() + " is added";
+            } else {
+                operationResult = "User with " + user.getLogin() + " is not added";
+            }
+            return operationResult;
         }
     }
 
     /**
      * Updates user in the database.
      *
-     * @param user specified item
+     * @param user specified user
+     * @return information whether operation succeeds or not
+     * @throws SQLException thrown if problems with database connection occur
      */
-    public void updateUser(User user) throws SQLException {
+    public String updateUser(User user) throws SQLException {
         try (PreparedStatement update =
                      connection.prepareStatement(UPDATE_USER)) {
             update.setString(1, user.getName());
             update.setString(2, user.getEmail());
             update.setString(3, user.getLogin());
-            update.executeUpdate();
+            int result = update.executeUpdate();
+            String operationResult;
+            if(result != 0) {
+                operationResult = "User with " + user.getLogin() + " is updated";
+            } else {
+                operationResult = "User with " + user.getLogin() + " is not found";
+            }
+            return operationResult;
         }
     }
 
@@ -120,12 +153,21 @@ public class UserDataBaseManager {
      * Deletes user from database.
      *
      * @param user specified item
+     * @return information whether operation succeeds or not
+     * @throws SQLException thrown if problems with database connection occur
      */
-    public void deleteUser(User user) throws SQLException {
+    public String deleteUser(User user) throws SQLException {
         try (PreparedStatement delete =
                      connection.prepareStatement(DELETE_USER)) {
             delete.setString(1, user.getLogin());
-            delete.executeUpdate();
+            int result = delete.executeUpdate();
+            String operationResult;
+            if(result != 0) {
+                operationResult = "User with " + user.getLogin() + " is deleted";
+            } else {
+                operationResult = "User with " + user.getLogin() + " is not found";
+            }
+            return operationResult;
         }
     }
 
@@ -137,18 +179,17 @@ public class UserDataBaseManager {
      */
     public User selectByLogin(String login) throws SQLException {
         User currentUser = null;
-        try (PreparedStatement selectByName =
+        try (PreparedStatement selectByLogin =
                      connection.prepareStatement(SELECT_BY_LOGIN)) {
-            selectByName.setString(1, login);
-            ResultSet users = selectByName.executeQuery();
-            while (users.next()) {
+            selectByLogin.setString(1, login);
+            ResultSet users = selectByLogin.executeQuery();
+            if (users.next()) {
                 currentUser = new User(
                         users.getString("name"),
                         login,
                         users.getString("email"),
                         users.getTimestamp("create_time").getTime()
                 );
-                break;
             }
         }
         return currentUser;
