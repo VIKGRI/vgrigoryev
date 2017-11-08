@@ -7,6 +7,36 @@
         <servlet-name>UserServlet</servlet-name>
         <servlet-class>grigoryev.servlets.UsersServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>DispatcherServlet</servlet-name>
+        <servlet-class>grigoryev.servlets.DispatcherServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ClientResponseServlet</servlet-name>
+        <servlet-class>grigoryev.servlets.ClientResponseServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>InsertServlet</servlet-name>
+        <servlet-class>grigoryev.servlets.InsertServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>DeleteServlet</servlet-name>
+        <servlet-class>grigoryev.servlets.DeleteServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UpdateServlet</servlet-name>
+        <servlet-class>grigoryev.servlets.UpdateServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>SelectByLoginServlet</servlet-name>
+        <servlet-class>grigoryev.servlets.SelectByLoginServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>SelectAllServlet</servlet-name>
+        <servlet-class>grigoryev.servlets.SelectAllServlet</servlet-class>
+    </servlet>
+
+
     <servlet-mapping>
         <servlet-name>EchoServlet</servlet-name>
         <url-pattern>/echo</url-pattern>
@@ -15,4 +45,55 @@
         <servlet-name>UserServlet</servlet-name>
         <url-pattern>/PerformUserRequest</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DispatcherServlet</servlet-name>
+        <url-pattern>/Dispatch</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ClientResponseServlet</servlet-name>
+        <url-pattern>/ClientResponse</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>InsertServlet</servlet-name>
+        <url-pattern>/InsertUser</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DeleteServlet</servlet-name>
+        <url-pattern>/DeleteUser</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UpdateServlet</servlet-name>
+        <url-pattern>/UpdateUser</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SelectByLoginServlet</servlet-name>
+        <url-pattern>/SelectUser</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SelectAllServlet</servlet-name>
+        <url-pattern>/SelectAll</url-pattern>
+    </servlet-mapping>
+
+    <context-param>
+        <param-name>driver</param-name>
+        <param-value>org.postgresql.Driver</param-value>
+    </context-param>
+    <context-param>
+        <param-name>username</param-name>
+        <param-value>postgres</param-value>
+    </context-param>
+    <context-param>
+        <param-name>url</param-name>
+        <param-value>jdbc:postgresql://localhost:5432/servlets</param-value>
+    </context-param>
+    <context-param>
+        <param-name>password</param-name>
+        <param-value>Elbrus2017</param-value>
+    </context-param>
+    <listener>
+        <listener-class>
+            grigoryev.servlets.UsersServletContextListener
+        </listener-class>
+    </listener>
 </web-app>
