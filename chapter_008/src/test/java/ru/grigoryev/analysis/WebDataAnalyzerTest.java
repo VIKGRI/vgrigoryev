@@ -20,7 +20,7 @@ public class WebDataAnalyzerTest {
             WebDataAnalyzer analyzer = new WebDataAnalyzer("http://www.sql.ru/forum/job/1");
             analyzer.setPeriodicity(8640); // It corresponds to launching program each 10 seconds.
             analyzer.launchSystem();
-            int idle = 300;
+            int idle = 500;
             while (idle > 0) {
                 idle--;
                 try {

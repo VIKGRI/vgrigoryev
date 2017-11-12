@@ -104,47 +104,58 @@ public class WebDataAnalyzer extends TimerTask {
     private void readWebPage(String url) throws IOException {
         // gets document which contains parsed Web page
         Document document = Jsoup.connect(url).get();
-        // gets second table in the page
-        Element table = document.select("table").get(2);
-        // gets table rows
-        Elements rows = table.select("tr");
         // checks whether it's needed to load the next page
         boolean processNextPage = true;
-
-        //Process each row
-        for (int i = 1; i < rows.size(); i++) {
-            // gets row by index
-            Element row = rows.get(i);
-            // gets columns
-            Elements columns = row.select("td");
-            String topic = columns.get(1).text();
-            if (!topic.startsWith("Важно:") && topic.toLowerCase().contains("java")) {
-                //Gets date of row
-                Calendar jobPostingDate = this.parseDate(columns.get(5).text());
-                // We don't want to process job postings which have already been processed
-                if (jobPostingDate.getTimeInMillis() < this.lastUpdate.getTime()) {
-                    processNextPage = false;
-                    break;
-                }
-                try {
-
-                    // Column with author info. It may contain reference to information about author.
-                    if (columns.get(2).children().size() > 0) {
-                        dbmanager.insertAuthor(columns.get(2).child(0).text(), columns.get(2).child(0).attr("href"));
-                    } else {
-                        dbmanager.insertAuthor(columns.get(2).text(), "");
+        //number of pages
+        int numOfPages = this.getPageNumbers(document);
+        System.out.println(numOfPages);
+        // process each page
+        for (int pageNumber = 0; pageNumber < numOfPages; pageNumber++) {
+            // gets second table in the page
+            Element table = document.select("table").get(2);
+            // gets table rows
+            Elements rows = table.select("tr");
+            //Process each row
+            for (int i = 1; i < rows.size(); i++) {
+                // gets row by index
+                Element row = rows.get(i);
+                // gets columns
+                Elements columns = row.select("td");
+                String topic = columns.get(1).text();
+                if (!topic.startsWith("Важно:") && topic.toLowerCase().contains("java")) {
+                    //Gets date of row
+                    Calendar jobPostingDate = this.parseDate(columns.get(5).text());
+                    // We don't want to process job postings which have already been processed
+                    if (jobPostingDate.getTimeInMillis() < this.lastUpdate.getTime()) {
+                        processNextPage = false;
+                        break;
                     }
-                    // Column with topic info. It contains reference to vacancy description.
-                    if (columns.get(1).children().size() > 0) {
-                        dbmanager.insertVacancy(columns.get(1).child(0).text(), columns.get(1).child(0).attr("href"),
-                                columns.get(2).child(0).text(), new Timestamp(jobPostingDate.getTimeInMillis()));
-                    } else {
-                        dbmanager.insertVacancy(topic, "",
-                                columns.get(2).child(0).text(), new Timestamp(jobPostingDate.getTimeInMillis()));
+                    try {
+                        // Column with author info. It may contain reference to information about author.
+                        if (columns.get(2).children().size() > 0) {
+                            dbmanager.insertAuthor(columns.get(2).child(0).text(), columns.get(2).child(0).attr("href"));
+                        } else {
+                            dbmanager.insertAuthor(columns.get(2).text(), "");
+                        }
+                        // Column with topic info. It contains reference to vacancy description.
+                        if (columns.get(1).children().size() > 0) {
+                            dbmanager.insertVacancy(columns.get(1).child(0).text(), columns.get(1).child(0).attr("href"),
+                                    columns.get(2).child(0).text(), new Timestamp(jobPostingDate.getTimeInMillis()));
+                        } else {
+                            dbmanager.insertVacancy(topic, "",
+                                    columns.get(2).child(0).text(), new Timestamp(jobPostingDate.getTimeInMillis()));
+                        }
+                    } catch (SQLException e) {
+                        LOG.error(e.getMessage(), e);
                     }
-                } catch (SQLException e) {
-                    LOG.error(e.getMessage(), e);
                 }
+            }
+            // gets document which contains next parsed Web page
+            if (pageNumber != numOfPages - 1) {
+                document = Jsoup.connect(this.getNextPageUrl(document)).get();
+            }
+            if (!processNextPage) {
+                break;
             }
         }
 
@@ -154,10 +165,32 @@ public class WebDataAnalyzer extends TimerTask {
         } catch (SQLException e) {
             LOG.error(e.getMessage(), e);
         }
-        // If we load all page we will load next page
-        if (processNextPage) {
-            this.readWebPage(this.getNextPageUrl(document));
-        }
+    }
+
+    /**
+     * Gets url of the next page of the given web site.
+     *
+     * @param document document got via parsing previous page by JSoup
+     * @return url of next page
+     */
+    private String getNextPageUrl(Document document) {
+        Element table2 = document.select("table").get(3);
+        Element td = table2.select("td").get(0);
+        Element page = table2.select("b").first();
+        return td.children().get(page.elementSiblingIndex() + 1).attr("href");
+    }
+
+    /**
+     * Gets number of pages of vacancies.
+     *
+     * @param document document got via parsing previous page by JSoup
+     * @return number of pages
+     */
+    private int getPageNumbers(Document document) {
+        Element table2 = document.select("table").get(3);
+        Element td = table2.select("td").get(0);
+        Element page = table2.select("a").last();
+        return Integer.parseInt(page.text());
     }
 
     /**
@@ -267,18 +300,5 @@ public class WebDataAnalyzer extends TimerTask {
         Calendar calendar = Calendar.getInstance();
         calendar.set(year, month, day, hours, minutes, seconds);
         return calendar;
-    }
-
-    /**
-     * Gets url of the next page of the given web site.
-     *
-     * @param document document got via parsing previous page by JSoup
-     * @return url of next page
-     */
-    private String getNextPageUrl(Document document) {
-        Element table2 = document.select("table").get(3);
-        Element td = table2.select("td").get(0);
-        Element page = table2.select("b").first();
-        return td.children().get(page.elementSiblingIndex() + 1).attr("href");
     }
 }
