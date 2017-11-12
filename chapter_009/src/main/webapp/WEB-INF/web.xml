@@ -8,8 +8,8 @@
         <servlet-class>grigoryev.servlets.UsersServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>DispatcherServlet</servlet-name>
-        <servlet-class>grigoryev.servlets.DispatcherServlet</servlet-class>
+        <servlet-name>ControllerServlet</servlet-name>
+        <servlet-class>grigoryev.servlets.ControllerServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>ClientResponseServlet</servlet-name>
@@ -46,8 +46,8 @@
         <url-pattern>/PerformUserRequest</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>DispatcherServlet</servlet-name>
-        <url-pattern>/Dispatch</url-pattern>
+        <servlet-name>ControllerServlet</servlet-name>
+        <url-pattern>/</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>ClientResponseServlet</servlet-name>
