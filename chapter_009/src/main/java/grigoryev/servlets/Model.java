@@ -2,7 +2,6 @@ package grigoryev.servlets;
 
 import org.slf4j.Logger;
 
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
@@ -106,7 +105,7 @@ public class Model {
                 String result = "Insertion error";
                 try {
                     result = UserStorage.USER_STORAGE.insertUser(user);
-                } catch (SQLException e) {
+                } catch (UserStorageDAOException e) {
                     this.logger.error(e.getMessage(), e);
                 }
                 return result;
@@ -123,7 +122,7 @@ public class Model {
             String result = "Deletion error";
             try {
                 result = UserStorage.USER_STORAGE.deleteUser(user);
-            } catch (SQLException e) {
+            } catch (UserStorageDAOException e) {
                 this.logger.error(e.getMessage(), e);
             }
             return result;
@@ -140,7 +139,7 @@ public class Model {
             String result = "Update error";
             try {
                 result = UserStorage.USER_STORAGE.updateUser(user);
-            } catch (SQLException e) {
+            } catch (UserStorageDAOException e) {
                 this.logger.error(e.getMessage(), e);
             }
             return result;
@@ -156,7 +155,7 @@ public class Model {
             User findUser = null;
             try {
                 findUser = UserStorage.USER_STORAGE.selectByLogin(user.getLogin());
-            } catch (SQLException e) {
+            } catch (UserStorageDAOException e) {
                 this.logger.error(e.getMessage(), e);
             }
             StringBuilder builder = new StringBuilder();

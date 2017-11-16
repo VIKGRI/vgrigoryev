@@ -78,7 +78,7 @@ public class UsersServletContextListener implements ServletContextListener {
 
         try {
             UserStorage.USER_STORAGE.createTable();
-        } catch(SQLException e) {
+        } catch (UserStorageDAOException e) {
             appLogger.error(e.getMessage(), e);
         }
     }

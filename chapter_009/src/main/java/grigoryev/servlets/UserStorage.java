@@ -2,6 +2,9 @@ package grigoryev.servlets;
 
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.apache.tomcat.jdbc.pool.PoolProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -52,6 +55,10 @@ public class UserStorage {
      * Datasource which provides connection pooling.
      */
     private  DataSource dataSource;
+    /**
+     * Logging DAO layer exceptions.
+     */
+    private static final Logger DAO_LOGGER = LoggerFactory.getLogger(UserStorage.class);
 
     /**
      * Constructor.
@@ -83,7 +90,7 @@ public class UserStorage {
         properties.setMaxWait(10000);
         properties.setRemoveAbandonedTimeout(60);
         properties.setMinEvictableIdleTimeMillis(30000);
-        properties.setMinIdle(20);//???
+        properties.setMinIdle(20);
         properties.setLogAbandoned(true);
         properties.setRemoveAbandoned(true);
 
@@ -96,15 +103,18 @@ public class UserStorage {
     /**
      * Creates database if it is not exists.
      *
-     * @throws SQLException thrown if problems with database connection occur
+     * @throws UserStorageDAOException thrown if problems with database connection occur
      */
-    public void createTable() throws SQLException {
+    public void createTable() throws UserStorageDAOException {
         try (Connection connection = dataSource.getConnection()) {
             String request = "CREATE TABLE IF NOT EXISTS users"
                     + "(name VARCHAR(50), login VARCHAR(50) PRIMARY KEY NOT NULL,"
                     + "email VARCHAR(50), create_time TIMESTAMP )";
             PreparedStatement createTable = connection.prepareStatement(request);
             createTable.execute();
+        } catch (SQLException e) {
+            DAO_LOGGER.error("Create table exception", e);
+            throw new UserStorageDAOException("Create table exception", e);
         }
     }
 
@@ -113,9 +123,9 @@ public class UserStorage {
      *
      * @param user specified user
      * @return information whether operation succeeds or not
-     * @throws SQLException thrown if problems with database connection occur
+     * @throws UserStorageDAOException thrown if problems with database occur
      */
-    public String insertUser(User user) throws SQLException {
+    public String insertUser(User user) throws UserStorageDAOException {
         try (Connection connection = dataSource.getConnection()) {
             try (PreparedStatement insert =
                          connection.prepareStatement(INSERT_USER)) {
@@ -125,13 +135,16 @@ public class UserStorage {
                 insert.setTimestamp(4, new Timestamp(user.getCreateDate()));
                 int result = insert.executeUpdate();
                 String operationResult;
-                if(result != 0) {
+                if (result != 0) {
                     operationResult = "User with login " + user.getLogin() + " is added";
                 } else {
                     operationResult = "User with login " + user.getLogin() + " is not added";
                 }
                 return operationResult;
             }
+        } catch (SQLException e) {
+            DAO_LOGGER.error("Insert user exception", e);
+            throw new UserStorageDAOException("Insert user exception", e);
         }
     }
 
@@ -140,9 +153,9 @@ public class UserStorage {
      *
      * @param user specified user
      * @return information whether operation succeeds or not
-     * @throws SQLException thrown if problems with database connection occur
+     * @throws UserStorageDAOException thrown if problems with database occur
      */
-    public String updateUser(User user) throws SQLException {
+    public String updateUser(User user) throws UserStorageDAOException {
         try (Connection connection = dataSource.getConnection()) {
             try (PreparedStatement update =
                          connection.prepareStatement(UPDATE_USER)) {
@@ -151,13 +164,16 @@ public class UserStorage {
                 update.setString(3, user.getLogin());
                 int result = update.executeUpdate();
                 String operationResult;
-                if(result != 0) {
+                if (result != 0) {
                     operationResult = "User with login " + user.getLogin() + " is updated";
                 } else {
                     operationResult = "User with login " + user.getLogin() + " is not found";
                 }
                 return operationResult;
             }
+        } catch (SQLException e) {
+            DAO_LOGGER.error("Update user exception", e);
+            throw new UserStorageDAOException("Update user exception", e);
         }
     }
 
@@ -166,22 +182,25 @@ public class UserStorage {
      *
      * @param user specified item
      * @return information whether operation succeeds or not
-     * @throws SQLException thrown if problems with database connection occur
+     * @throws UserStorageDAOException thrown if problems with database occur
      */
-    public String deleteUser(User user) throws SQLException {
+    public String deleteUser(User user) throws UserStorageDAOException {
         try (Connection connection = dataSource.getConnection()) {
             try (PreparedStatement delete =
                          connection.prepareStatement(DELETE_USER)) {
                 delete.setString(1, user.getLogin());
                 int result = delete.executeUpdate();
                 String operationResult;
-                if(result != 0) {
+                if (result != 0) {
                     operationResult = "User with login " + user.getLogin() + " is deleted";
                 } else {
                     operationResult = "User with login " + user.getLogin() + " is not found";
                 }
                 return operationResult;
             }
+        } catch (SQLException e) {
+            DAO_LOGGER.error("Delete user exception", e);
+            throw new UserStorageDAOException("Delete user exception", e);
         }
     }
 
@@ -190,9 +209,9 @@ public class UserStorage {
      *
      * @param login specified login.
      * @return User with specified login or null if he doesn't exist
-     * @throws SQLException thrown if problems with database connection occur
+     * @throws UserStorageDAOException thrown if problems with database occur
      */
-    public User selectByLogin(String login) throws SQLException {
+    public User selectByLogin(String login) throws UserStorageDAOException {
         User currentUser = null;
         try (Connection connection = dataSource.getConnection()) {
             try (PreparedStatement selectByName =
@@ -209,6 +228,9 @@ public class UserStorage {
                     break;
                 }
             }
+        } catch (SQLException e) {
+            DAO_LOGGER.error("Select user by login exception", e);
+            throw new UserStorageDAOException("Select user by login exception", e);
         }
         return currentUser;
     }
@@ -217,9 +239,9 @@ public class UserStorage {
      * Selects all users from database.
      *
      * @return list of all users
-     * @throws SQLException thrown if problems with database connection occur
+     * @throws UserStorageDAOException thrown if problems with database occur
      */
-    public List<User> selectAll() throws SQLException {
+    public List<User> selectAll() throws UserStorageDAOException {
         User currentUser;
         List<User> result = new ArrayList<>();
         try (Connection connection = dataSource.getConnection()) {
@@ -236,6 +258,9 @@ public class UserStorage {
                     result.add(currentUser);
                 }
             }
+        } catch (SQLException e) {
+            DAO_LOGGER.error("Select all users exception", e);
+            throw new UserStorageDAOException("Select all users exception", e);
         }
         return result;
     }

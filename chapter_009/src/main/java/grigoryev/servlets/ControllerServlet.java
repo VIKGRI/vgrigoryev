@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -29,7 +28,7 @@ public class ControllerServlet extends HttpServlet {
             req.setAttribute("users", users);
             RequestDispatcher view = req.getRequestDispatcher("/WEB-INF/views/usersView.jsp");
             view.forward(req, resp);
-        } catch (SQLException e) {
+        } catch (UserStorageDAOException e) {
             logger.error(e.getMessage(), e);
         }
     }
@@ -53,7 +52,7 @@ public class ControllerServlet extends HttpServlet {
             req.setAttribute("users", users);
             RequestDispatcher view = req.getRequestDispatcher("/WEB-INF/views/usersView.jsp");
             view.forward(req, resp);
-        } catch (SQLException e) {
+        } catch (UserStorageDAOException e) {
             logger.error(e.getMessage(), e);
         }
     }
