@@ -23,6 +23,14 @@ public class User {
      * User's create date.
      */
     private long createTime;
+    /**
+     * User's password.
+     */
+    private String password;
+    /**
+     * User's role.
+     */
+    private Role role;
 
     /**
      * Constructor.
@@ -31,12 +39,16 @@ public class User {
      * @param login user's login
      * @param email user's email
      * @param createTime date and time when user was created
+     * @param password user's password
+     * @param role user's role
      */
-    public User(String name, String login, String email, long createTime) {
+    public User(String name, String login, String email, long createTime, String password, Role role) {
         this.name = name;
         this.login = login;
         this.email = email;
         this.createTime = createTime;
+        this.password = password;
+        this.role = role;
     }
 
     /**
@@ -93,5 +105,46 @@ public class User {
      */
     public void setEmail(String email) {
         this.email = email;
+    }
+    /**
+     * Sets user's create time.
+     * @return user's create time
+     */
+    public void setCreateTime(long createTime) {
+        this.createTime = createTime;
+    }
+
+    /**
+     * Gets user's password.
+     * @return user's password
+     */
+    public String getPassword() {
+        return password;
+    }
+
+    /**
+     * Sets user's password.
+     * @param password user's password
+     */
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    /**
+     * Gets user's role.
+     *
+     * @return user's role
+     */
+    public Role getRole() {
+        return role;
+    }
+
+    /**
+     * Sets user role.
+     *
+     * @param role user's role
+     */
+    public void setRole(Role role) {
+        this.role = role;
     }
 }

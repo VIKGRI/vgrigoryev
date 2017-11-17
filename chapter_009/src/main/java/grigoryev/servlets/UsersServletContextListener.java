@@ -3,9 +3,10 @@ package grigoryev.servlets;
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-import java.sql.SQLException;
 
 /**
  * Servlet context listener. Initializes resources when
@@ -13,8 +14,8 @@ import java.sql.SQLException;
  * destroyed.
  *
  * @author vgrigoryev
- * @since 08.11.2017
  * @version 1
+ * @since 08.11.2017
  */
 public class UsersServletContextListener implements ServletContextListener {
     /**
@@ -36,6 +37,7 @@ public class UsersServletContextListener implements ServletContextListener {
 
     /**
      * Gets url.
+     *
      * @return url
      */
     public static String getUrl() {
@@ -44,6 +46,7 @@ public class UsersServletContextListener implements ServletContextListener {
 
     /**
      * Gets driver.
+     *
      * @return driver
      */
     public static String getDriver() {
@@ -52,6 +55,7 @@ public class UsersServletContextListener implements ServletContextListener {
 
     /**
      * Gets username.
+     *
      * @return username
      */
     public static String getUsername() {
@@ -60,6 +64,7 @@ public class UsersServletContextListener implements ServletContextListener {
 
     /**
      * Gets password.
+     *
      * @return password
      */
     public static String getPassword() {
@@ -77,7 +82,32 @@ public class UsersServletContextListener implements ServletContextListener {
         password = sce.getServletContext().getInitParameter("password");
 
         try {
-            UserStorage.USER_STORAGE.createTable();
+            UserStorage.USER_STORAGE.createTables();
+
+            UserStorage.USER_STORAGE.addRole("admin", "manages web resource");
+            UserStorage.USER_STORAGE.addRole("user", "uses web resource");
+
+            UserStorage.USER_STORAGE.addPrivilege(Action.Insert.name(), "inserts user in the database");
+            UserStorage.USER_STORAGE.addPrivilege(Action.Delete.name(), "deletes user from the database");
+            UserStorage.USER_STORAGE.addPrivilege(Action.Update.name(), "updates user in the database");
+            UserStorage.USER_STORAGE.addPrivilege(Action.Select.name(), "select user by login from the database");
+            UserStorage.USER_STORAGE.addPrivilege(Action.Selectall.name(), "selects all users from the database");
+
+            UserStorage.USER_STORAGE.bindRoleAndPrivilege("admin", Action.Insert);
+            UserStorage.USER_STORAGE.bindRoleAndPrivilege("admin", Action.Delete);
+            UserStorage.USER_STORAGE.bindRoleAndPrivilege("admin", Action.Update);
+            UserStorage.USER_STORAGE.bindRoleAndPrivilege("admin", Action.Select);
+            UserStorage.USER_STORAGE.bindRoleAndPrivilege("admin", Action.Selectall);
+            UserStorage.USER_STORAGE.bindRoleAndPrivilege("user", Action.Update);
+            UserStorage.USER_STORAGE.bindRoleAndPrivilege("user", Action.Select);
+            UserStorage.USER_STORAGE.bindRoleAndPrivilege("user", Action.Selectall);
+
+            Roles roles = Roles.getInstance();
+
+            sce.getServletContext().setAttribute("roleList", roles.getRoleNames());
+
+            UserStorage.USER_STORAGE.insertUser(new User("root", "root", "root@mail.ru",
+                    System.currentTimeMillis(), "root", roles.getRole("admin")));
         } catch (UserStorageDAOException e) {
             appLogger.error(e.getMessage(), e);
         }

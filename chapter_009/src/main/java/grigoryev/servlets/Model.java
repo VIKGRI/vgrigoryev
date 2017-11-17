@@ -27,19 +27,25 @@ public class Model {
      * Request object.
      */
     private User user;
+    /**
+     * Currently using the program user's role.
+     */
+    private Role onlineUserRole;
 
     /**
      * Constructor.
+     *
      * @param logger logger
-     * @param user user
+     * @param user   user
      */
-    public Model(Logger logger, User user) {
+    public Model(Logger logger, User user, Role onlineUserRole) {
         this.logger = logger;
         this.user = user;
+        this.onlineUserRole = onlineUserRole;
     }
 
     /**
-     * Inits model.
+     * Initializes model.
      * Loads actions and corresponding handlers.
      *
      * @return initialized model
@@ -102,15 +108,20 @@ public class Model {
      */
     public Function<User, String> insertAction() {
         return (user) -> {
-                String result = "Insertion error";
-                try {
+            String result = "Insertion error";
+            try {
+                if (this.onlineUserRole.isActionAvailable(Action.Insert)) {
                     result = UserStorage.USER_STORAGE.insertUser(user);
-                } catch (UserStorageDAOException e) {
-                    this.logger.error(e.getMessage(), e);
+                } else {
+                    result = "You have no rights to perform this operation";
                 }
-                return result;
+            } catch (UserStorageDAOException e) {
+                this.logger.error(e.getMessage(), e);
+            }
+            return result;
         };
     }
+
     /**
      * Deletes user in the database.
      *
@@ -121,13 +132,18 @@ public class Model {
         return (user) -> {
             String result = "Deletion error";
             try {
-                result = UserStorage.USER_STORAGE.deleteUser(user);
+                if (this.onlineUserRole.isActionAvailable(Action.Delete)) {
+                    result = UserStorage.USER_STORAGE.deleteUser(user);
+                } else {
+                    result = "You have no rights to perform this operation";
+                }
             } catch (UserStorageDAOException e) {
                 this.logger.error(e.getMessage(), e);
             }
             return result;
         };
     }
+
     /**
      * Updates user in the database.
      *
@@ -136,15 +152,27 @@ public class Model {
      */
     public Function<User, String> updateAction() {
         return (user) -> {
-            String result = "Update error";
+            StringBuilder result = new StringBuilder();
             try {
-                result = UserStorage.USER_STORAGE.updateUser(user);
+                if (this.onlineUserRole.isActionAvailable(Action.Update) && this.onlineUserRole.equals(user.getRole())
+                        || this.onlineUserRole.getName().equals("admin")) {
+                    result.append(UserStorage.USER_STORAGE.updateUser(user));
+                } else {
+                    result.append("You have no rights to perform this operation. ");
+                    if (!this.onlineUserRole.equals(user.getRole())) {
+                        result.append("You can not change your role.");
+                    }
+                }
             } catch (UserStorageDAOException e) {
                 this.logger.error(e.getMessage(), e);
             }
-            return result;
+            if (result.length() == 0) {
+                result.append("Update error");
+            }
+            return result.toString();
         };
     }
+
     /**
      * Selects user from the database.
      *
@@ -174,6 +202,7 @@ public class Model {
             return builder.toString();
         };
     }
+
     /**
      * Selects all users from the database.
      *

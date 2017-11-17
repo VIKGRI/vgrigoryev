@@ -7,6 +7,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 
@@ -37,14 +38,25 @@ public class ControllerServlet extends HttpServlet {
         String name = req.getParameter("name");
         String login = req.getParameter("login");
         String email = req.getParameter("email");
+        String password = req.getParameter("password");
         String actionType = req.getParameter("actionType");
-        User user = new User(name, login, email, System.currentTimeMillis());
+        String role = req.getParameter("role");
+        Roles roles = Roles.getInstance();
+        User user = new User(name, login, email, System.currentTimeMillis(), password, roles.getRole(role));
+
         req.setAttribute("user", user);
+
         Logger logger = (Logger) req.getServletContext().getAttribute("appLogger");
 
         //new ServletActionDispatcher(req, resp, logger).init().perform(ActionDispatcher.toAction(actionType));
+        HttpSession session = req.getSession();
+        Role signedInUserRole;
+        synchronized (session) {
+            signedInUserRole = (Role) session.getAttribute("role");
+        }
 
-        String operationResult = new Model(logger, user).init().perform(ActionDispatcher.toAction(actionType));
+        String operationResult =
+                new Model(logger, user, signedInUserRole).init().perform(ActionDispatcher.toAction(actionType));
         req.setAttribute("operationResult", operationResult);
 
         try {

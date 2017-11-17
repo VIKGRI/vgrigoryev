@@ -2,6 +2,7 @@
 <%@ page import="grigoryev.servlets.User" %>
 <%@ page import="java.util.List" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="simpleTags" prefix="formTags" %>
 
 <html>
 <head>
@@ -9,7 +10,6 @@
     <style>
         table, th, td {
             border: 1px solid black;
-
             border-collapse: collapse;
             cellpadding: "1";
             cellspacing: "1";
@@ -19,7 +19,7 @@
 <body>
 <h1 align="center">User Managing Page</h1>
 <form method="post"
-      action="${pageContext.servletContext.contextPath}/">
+             action="${pageContext.servletContext.contextPath}/">
     Select type of action:
     <p>
         Name:<br>
@@ -28,6 +28,13 @@
         <input type="text" name="login"><br>
         Email:<br>
         <input type="text" name="email"><br>
+        Password:<br>
+        <input type="text" name="password"><br>
+        Role:<br>
+
+        <formTags:select name="role" size="1"
+                         optionList="${applicationScope.roleList}" /><br/>
+
         Action:
         <select name="actionType" size="1">
             <option value="insert">INSERT</option>
@@ -42,6 +49,10 @@
     </div>
     </p>
 </form>
+<form method="get"
+      action="${pageContext.servletContext.contextPath}/signin">
+    Exit: <input type="submit" value="exit">
+</form>
 <div>${requestScope.operationResult}</div><br/><br/>
 <table>
     <tr>
@@ -49,6 +60,7 @@
         <th>login</th>
         <th>email</th>
         <th>create date</th>
+        <th>role</th>
     </tr>
     <c:forEach var="user" items="${users}" >
         <tr>
@@ -56,6 +68,7 @@
             <td><c:out value="${user.login}"/></td>
             <td><c:out value="${user.email}"/></td>
             <td><c:out value="${user.createDate}"/></td>
+            <td><c:out value="${user.role.name}"/></td>
         </tr>
     </c:forEach>
 </table>
