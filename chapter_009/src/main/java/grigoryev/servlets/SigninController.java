@@ -30,14 +30,8 @@ public class SigninController extends HttpServlet {
         Logger logger = (Logger) req.getServletContext().getAttribute("appLogger");
         try {
             if (UserStorage.USER_STORAGE.isCredentional(login, password)) {
-                HttpSession session = req.getSession();
-
-                User us = UserStorage.USER_STORAGE.selectByLogin(login);
-
-                synchronized (session) {
-                    session.setAttribute("login", login);
-                    session.setAttribute("role", UserStorage.USER_STORAGE.selectByLogin(login).getRole());
-                }
+                req.getSession().setAttribute("login", login);
+                req.getSession().setAttribute("role", UserStorage.USER_STORAGE.selectByLogin(login).getRole());
                 resp.sendRedirect(String.format("%s/", req.getContextPath()));
             } else {
                 req.setAttribute("error", "Credentional invalid");
