@@ -21,8 +21,8 @@ import java.util.Map;
  * which stores users.
  *
  * @author vgrigoryev
- * @since 08.11.2017
  * @version 1
+ * @since 08.11.2017
  */
 public class UserStorage {
     /**
@@ -32,16 +32,17 @@ public class UserStorage {
     public static final UserStorage USER_STORAGE = new UserStorage(setupDataSourceConnection());
 
     /**
+     * Provides creation of only one instance per app for test.
+     * Implements singleton pattern.
+     */
+    public static final UserStorage USER_STORAGE_TEST = new UserStorage(setupDataSourceConnectionForTest());
+
+    /**
      * Request for inserting user in the database.
      */
     private static final String INSERT_USER =
-            "INSERT INTO users (name, login, email, create_time, password, role) "
-                    + "VALUES ((?), (?), (?), (?), (?), (?)) ON CONFLICT DO NOTHING";
-    /**
-     * Request for updating user in the database.
-     */
-    private static final String UPDATE_USER =
-            "UPDATE users SET name = (?), email = (?), password = (?), role = (?) WHERE login = (?)";
+            "INSERT INTO users (name, login, email, create_time, password, city, country, role) "
+                    + "VALUES ((?), (?), (?), (?), (?), (?), (?), (?)) ON CONFLICT DO NOTHING";
     /**
      * Request for deleting user in the database.
      */
@@ -50,16 +51,16 @@ public class UserStorage {
     /**
      * Request for selecting user which matches specified login in the database.
      */
-    private static final String SELECT_BY_LOGIN = "SELECT name, login, email, create_time, role FROM users WHERE login = (?)";
+    private static final String SELECT_BY_LOGIN = "SELECT name, login, email, create_time, city, country, role FROM users WHERE login = (?)";
     /**
      * Request for selecting all users in the database.
      */
-    private static final String SELECT_ALL_USERS = "SELECT name, login, email, create_time, role FROM users";
+    private static final String SELECT_ALL_USERS = "SELECT name, login, email, create_time, city, country, role FROM users";
 
     /**
      * Datasource which provides connection pooling.
      */
-    private  DataSource dataSource;
+    private DataSource dataSource;
     /**
      * Logging DAO layer exceptions.
      */
@@ -67,6 +68,7 @@ public class UserStorage {
 
     /**
      * Constructor.
+     *
      * @param ds datasource which provides connection pooling
      */
     private UserStorage(DataSource ds) {
@@ -75,6 +77,7 @@ public class UserStorage {
 
     /**
      * Sets up data source pooling connection.
+     *
      * @return data source
      */
     private static DataSource setupDataSourceConnection() {
@@ -127,9 +130,19 @@ public class UserStorage {
                         + "PRIMARY KEY (role_name, privilege))";
                 createTable.execute(createRolesAndPrivilegies);
 
+                String createCities = "CREATE TABLE IF NOT EXISTS cities"
+                        + "(city VARCHAR(30) PRIMARY KEY)";
+                createTable.execute(createCities);
+
+                String createCountries = "CREATE TABLE IF NOT EXISTS countries"
+                        + "(country VARCHAR(30) PRIMARY KEY)";
+                createTable.execute(createCountries);
+
                 String createUsers = "CREATE TABLE IF NOT EXISTS users"
                         + "(name VARCHAR(50), login VARCHAR(50) PRIMARY KEY NOT NULL,"
                         + "email VARCHAR(50), create_time TIMESTAMP, password VARCHAR(20), "
+                        + "city VARCHAR(30) REFERENCES cities(city) NOT NULL, "
+                        + "country VARCHAR(30) REFERENCES countries(country) NOT NULL, "
                         + "role VARCHAR(20) REFERENCES roles(role_name) NOT NULL)";
                 createTable.execute(createUsers);
             }
@@ -147,15 +160,17 @@ public class UserStorage {
      * @throws UserStorageDAOException thrown if problems with database occur
      */
     public String insertUser(User user) throws UserStorageDAOException {
-                try (Connection connection = dataSource.getConnection()) {
-                    try (PreparedStatement insert =
-                                 connection.prepareStatement(INSERT_USER)) {
-                        insert.setString(1, user.getName());
-                        insert.setString(2, user.getLogin());
-                        insert.setString(3, user.getEmail());
-                        insert.setTimestamp(4, new Timestamp(user.getCreateDate()));
-                        insert.setString(5, user.getPassword());
-                        insert.setString(6, user.getRole().getName());
+        try (Connection connection = dataSource.getConnection()) {
+            try (PreparedStatement insert =
+                         connection.prepareStatement(INSERT_USER)) {
+                insert.setString(1, user.getName());
+                insert.setString(2, user.getLogin());
+                insert.setString(3, user.getEmail());
+                insert.setTimestamp(4, new Timestamp(user.getCreateDate()));
+                insert.setString(5, user.getPassword());
+                insert.setString(6, user.getCity().toLowerCase());
+                insert.setString(7, user.getCountry().toLowerCase());
+                insert.setString(8, user.getRole().getName());
                 int result = insert.executeUpdate();
                 String operationResult;
                 if (result != 0) {
@@ -180,14 +195,9 @@ public class UserStorage {
      */
     public String updateUser(User user) throws UserStorageDAOException {
         try (Connection connection = dataSource.getConnection()) {
-            try (PreparedStatement update =
-                         connection.prepareStatement(UPDATE_USER)) {
-                update.setString(1, user.getName());
-                update.setString(2, user.getEmail());
-                update.setString(3, user.getPassword());
-                update.setString(4, user.getRole().getName());
-                update.setString(5, user.getLogin());
-                int result = update.executeUpdate();
+            try (Statement update =
+                         connection.createStatement()) {
+                int result = update.executeUpdate(this.constructUpdateUserStatment(user));
                 String operationResult;
                 if (result != 0) {
                     operationResult = "User with login " + user.getLogin() + " is updated";
@@ -200,6 +210,55 @@ public class UserStorage {
             DAO_LOGGER.error("Update user exception", e);
             throw new UserStorageDAOException("Update user exception", e);
         }
+    }
+
+    /**
+     * Constructs update query string depending on whether
+     * field is included in form or not.
+     *
+     * @param user user to update.
+     * @return update query string
+     */
+    private String constructUpdateUserStatment(User user) {
+        boolean hasFieldBefore = false;
+        StringBuilder updateStatment = new StringBuilder();
+        updateStatment.append("UPDATE users SET ");
+        if (user.getName() != "") {
+            updateStatment.append("name = " + "'" + user.getName() + "'");
+            hasFieldBefore = true;
+        }
+        if (user.getEmail() != "") {
+            if (hasFieldBefore) {
+                updateStatment.append(", ");
+            }
+            updateStatment.append("email = " + "'" + user.getEmail() + "'");
+        }
+        if (user.getPassword() != "") {
+            if (hasFieldBefore) {
+                updateStatment.append(", ");
+            }
+            updateStatment.append("password = " + "'" + user.getPassword() + "'");
+        }
+        if (user.getCity() != "") {
+            if (hasFieldBefore) {
+                updateStatment.append(", ");
+            }
+            updateStatment.append("city = " + "'" + user.getCity() + "'");
+        }
+        if (user.getCountry() != "") {
+            if (hasFieldBefore) {
+                updateStatment.append(", ");
+            }
+            updateStatment.append("country = " + "'" + user.getCountry() + "'");
+        }
+
+        if (hasFieldBefore) {
+            updateStatment.append(", ");
+        }
+        updateStatment.append("role = " + "'" + user.getRole().getName() + "'");
+
+        updateStatment.append(" WHERE login = " + "'" + user.getLogin() + "'");
+        return updateStatment.toString();
     }
 
     /**
@@ -252,6 +311,8 @@ public class UserStorage {
                             users.getTimestamp("create_time").getTime(),
                             null, roles.getRole(users.getString("role"))
                     );
+                    currentUser.setCity(users.getString("city"));
+                    currentUser.setCountry(users.getString("country"));
                     break;
                 }
             }
@@ -281,9 +342,11 @@ public class UserStorage {
                             users.getString("name"),
                             users.getString("login"),
                             users.getString("email"),
-                            users.getTimestamp("create_time").getTime(),
-                            null, roles.getRole(users.getString("role"))
+                            users.getTimestamp("create_time").getTime(), null,
+                            roles.getRole(users.getString("role"))
                     );
+                    currentUser.setCity(users.getString("city"));
+                    currentUser.setCountry(users.getString("country"));
                     result.add(currentUser);
                 }
             }
@@ -297,7 +360,7 @@ public class UserStorage {
     /**
      * Confirms whether user is authenticated or not.
      *
-     * @param login user's login
+     * @param login    user's login
      * @param password user's password
      * @return true if user is authenticated, otherwise false
      * @throws UserStorageDAOException thrown if problems with database occur
@@ -324,10 +387,10 @@ public class UserStorage {
     }
 
     /**
-     * Inserts role in the database.
+     * Inserts role-privilege binding in the database.
      *
      * @param roleName role's name.
-     * @param action action available for this role
+     * @param action   action available for this role
      * @return information whether operation succeeds or not
      * @throws UserStorageDAOException thrown if problems with database occur
      */
@@ -355,12 +418,18 @@ public class UserStorage {
         }
     }
 
+    /**
+     * Returns all available roles and corresponding privileges in the app.
+     *
+     * @return map pf roles
+     * @throws UserStorageDAOException thrown if problems with database occur
+     */
     public Map<String, Role> selectRoles() throws UserStorageDAOException {
         try (Connection connection = dataSource.getConnection()) {
             Map<String, Role> roles = new HashMap<>();
             String sql = "SELECT * FROM roles_and_privilegies";
             try (Statement statement =
-                          connection.createStatement()) {
+                         connection.createStatement()) {
                 ResultSet result = statement.executeQuery(sql);
                 while (result.next()) {
                     String roleName = result.getString("role_name");
@@ -379,6 +448,14 @@ public class UserStorage {
         }
     }
 
+    /**
+     * Adds new role in the database.
+     *
+     * @param roleName    name
+     * @param description description
+     * @return operation result information
+     * @throws UserStorageDAOException thrown if problems with database occur
+     */
     public String addRole(String roleName, String description) throws UserStorageDAOException {
         String sql = "INSERT INTO roles (role_name, description) VALUES ((?), (?)) ON CONFLICT DO NOTHING";
 
@@ -402,6 +479,14 @@ public class UserStorage {
         }
     }
 
+    /**
+     * Adds new privilege to the database.
+     *
+     * @param privilegeName name
+     * @param description   description
+     * @return operation result information
+     * @throws UserStorageDAOException thrown if problems with database occur
+     */
     public String addPrivilege(String privilegeName, String description) throws UserStorageDAOException {
         String sql = "INSERT INTO privilegies (privilege_name, description) VALUES ((?), (?)) ON CONFLICT DO NOTHING";
 
@@ -423,5 +508,141 @@ public class UserStorage {
             DAO_LOGGER.error("Insert privilege exception", e);
             throw new UserStorageDAOException("Insert privilege exception", e);
         }
+    }
+
+    /**
+     * Inserts new city.
+     *
+     * @param city city
+     * @return operation result information
+     * @throws UserStorageDAOException thrown if problems with database occur
+     */
+    public String addCity(String city) throws UserStorageDAOException {
+        String sql = "INSERT INTO cities (city) VALUES ((?)) ON CONFLICT DO NOTHING";
+
+        try (Connection connection = dataSource.getConnection()) {
+            try (PreparedStatement insert =
+                         connection.prepareStatement(sql)) {
+                insert.setString(1, city.toLowerCase());
+                int result = insert.executeUpdate();
+                String operationResult;
+                if (result != 0) {
+                    operationResult = "City " + city.toLowerCase() + " is added";
+                } else {
+                    operationResult = "City " + city.toLowerCase() + " is not added";
+                }
+                return operationResult;
+            }
+        } catch (SQLException e) {
+            DAO_LOGGER.error("Insert city exception", e);
+            throw new UserStorageDAOException("Insert city exception", e);
+        }
+    }
+
+    /**
+     * Inserts new country.
+     *
+     * @param country
+     * @return operation result information
+     * @throws UserStorageDAOException thrown if problems with database occur
+     */
+    public String addCountry(String country) throws UserStorageDAOException {
+        String sql = "INSERT INTO countries (country) VALUES ((?)) ON CONFLICT DO NOTHING";
+
+        try (Connection connection = dataSource.getConnection()) {
+            try (PreparedStatement insert =
+                         connection.prepareStatement(sql)) {
+                insert.setString(1, country.toLowerCase());
+                int result = insert.executeUpdate();
+                String operationResult;
+                if (result != 0) {
+                    operationResult = "Country " + country.toLowerCase() + " is added";
+                } else {
+                    operationResult = "Country " + country.toLowerCase() + " is not added";
+                }
+                return operationResult;
+            }
+        } catch (SQLException e) {
+            DAO_LOGGER.error("Insert country exception", e);
+            throw new UserStorageDAOException("Insert country exception", e);
+        }
+    }
+
+    /**
+     * Gets cities from data base.
+     * @return cities
+     * @throws UserStorageDAOException thrown if problems with database occur
+     */
+    public List<String> getCities() throws UserStorageDAOException {
+        try (Connection connection = dataSource.getConnection()) {
+            String sql = "SELECT city FROM cities";
+
+            List<String> cities = new ArrayList<>();
+            try (Statement statement =
+                         connection.createStatement()) {
+                ResultSet result = statement.executeQuery(sql);
+                while (result.next()) {
+                    cities.add(result.getString("city"));
+                }
+            }
+            return cities;
+
+        } catch (SQLException e) {
+            DAO_LOGGER.error("Insert country exception", e);
+            throw new UserStorageDAOException("Insert country exception", e);
+        }
+    }
+
+    /**
+     * Gets countries from data base.
+     * @return countries
+     * @throws UserStorageDAOException thrown if problems with database occur
+     */
+    public List<String> getCountries() throws UserStorageDAOException {
+        try (Connection connection = dataSource.getConnection()) {
+            String sql = "SELECT country FROM countries";
+
+            List<String> countries = new ArrayList<>();
+            try (Statement statement =
+                         connection.createStatement()) {
+                ResultSet result = statement.executeQuery(sql);
+                while (result.next()) {
+                    countries.add(result.getString("country"));
+                }
+            }
+            return countries;
+        } catch (SQLException e) {
+            DAO_LOGGER.error("Insert country exception", e);
+            throw new UserStorageDAOException("Insert country exception", e);
+        }
+    }
+
+    /**
+     * Sets up data source pooling connection for test only.
+     *
+     * @return data source
+     */
+    private static DataSource setupDataSourceConnectionForTest() {
+        PoolProperties properties = new PoolProperties();
+        properties.setUrl("jdbc:postgresql://localhost:5432/servlets");
+        properties.setDriverClassName("org.postgresql.Driver");
+        properties.setUsername("postgres");
+        properties.setPassword("Elbrus2017");
+
+        properties.setTestOnBorrow(true);
+        properties.setValidationQuery("SELECT 1");
+        properties.setMaxActive(20);
+        properties.setInitialSize(10);
+        properties.setMaxWait(10000);
+        properties.setRemoveAbandonedTimeout(60);
+        properties.setMinEvictableIdleTimeMillis(30000);
+        properties.setMinIdle(20);
+        properties.setLogAbandoned(true);
+        properties.setRemoveAbandoned(true);
+
+        DataSource dataSource = new DataSource();
+        dataSource.setPoolProperties(properties);
+
+        return dataSource;
     }
 }

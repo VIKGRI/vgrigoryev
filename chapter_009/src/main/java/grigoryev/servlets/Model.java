@@ -65,7 +65,7 @@ public class Model {
      * @param action action
      * @param handle action handler
      */
-    public void load(Action action, Function<User, String> handle) {
+    void load(Action action, Function<User, String> handle) {
         this.dispatch.put(action, handle);
     }
 
@@ -92,7 +92,7 @@ public class Model {
      * @param action specified action in string representation
      * @return action which corresponds to one of the loaded actions
      */
-    public static Action toAction(String action) {
+    static Action toAction(String action) {
         String firstLetter = action.trim().substring(0, 1).toUpperCase();
         String restLetters = action.trim().toLowerCase().substring(1);
         String act = firstLetter
@@ -106,12 +106,12 @@ public class Model {
      * @return function which returns information about addition operation
      * whether it succeeds or not
      */
-    public Function<User, String> insertAction() {
+    Function<User, String> insertAction() {
         return (user) -> {
             String result = "Insertion error";
             try {
                 if (this.onlineUserRole.isActionAvailable(Action.Insert)) {
-                    result = UserStorage.USER_STORAGE.insertUser(user);
+                    result = UserStorage.USER_STORAGE.insertUser(user); // For test use UserStorage.USER_STORAGE_TEST
                 } else {
                     result = "You have no rights to perform this operation";
                 }
@@ -133,7 +133,7 @@ public class Model {
             String result = "Deletion error";
             try {
                 if (this.onlineUserRole.isActionAvailable(Action.Delete)) {
-                    result = UserStorage.USER_STORAGE.deleteUser(user);
+                    result = UserStorage.USER_STORAGE.deleteUser(user); // For test use UserStorage.USER_STORAGE_TEST
                 } else {
                     result = "You have no rights to perform this operation";
                 }
@@ -156,7 +156,7 @@ public class Model {
             try {
                 if (this.onlineUserRole.isActionAvailable(Action.Update) && this.onlineUserRole.equals(user.getRole())
                         || this.onlineUserRole.getName().equals("admin")) {
-                    result.append(UserStorage.USER_STORAGE.updateUser(user));
+                    result.append(UserStorage.USER_STORAGE.updateUser(user)); // For test use UserStorage.USER_STORAGE_TEST
                 } else {
                     result.append("You have no rights to perform this operation. ");
                     if (!this.onlineUserRole.equals(user.getRole())) {
@@ -182,7 +182,7 @@ public class Model {
         return (user) -> {
             User findUser = null;
             try {
-                findUser = UserStorage.USER_STORAGE.selectByLogin(user.getLogin());
+                findUser = UserStorage.USER_STORAGE.selectByLogin(user.getLogin()); // For test use UserStorage.USER_STORAGE_TEST
             } catch (UserStorageDAOException e) {
                 this.logger.error(e.getMessage(), e);
             }
@@ -190,11 +190,13 @@ public class Model {
             builder.append("<table style=\"width:100%\">");
             builder.append("<tr>"
                     + "    <th>name</th>" + "    <th>login</th>"
-                    + "    <th>email</th>" + "    <th>create date</th>" + "  </tr>");
+                    + "    <th>email</th>" + "    <th>city</th>"
+                    + "    <th>country</th>" + " <th>create date</th>" + "  </tr>");
             if (findUser != null) {
                 builder.append("<tr>"
                         + "    <th>" + findUser.getName() + "</th>" + "<th>" + findUser.getLogin() + "</th>"
-                        + "    <th>" + findUser.getEmail() + "</th>" + "<th>" + findUser.getCreateDate() + "</th>" + "  </tr>");
+                        + "    <th>" + findUser.getEmail() + "</th>" + "<th>" + findUser.getCity() + "</th>"
+                        + "    <th>" + findUser.getCountry() + "</th>" + "<th>" + findUser.getCreateDate() + "</th>" + "  </tr>");
                 builder.append("<br><br><br>");
             } else {
                 builder.append("User is not found");

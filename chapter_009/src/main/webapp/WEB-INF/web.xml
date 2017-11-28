@@ -40,6 +40,15 @@
         <servlet-class>grigoryev.servlets.SigninController</servlet-class>
     </servlet>
 
+    <servlet>
+        <servlet-name>JSonController</servlet-name>
+        <servlet-class>grigoryev.servlets.JsonController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>JSonController</servlet-name>
+        <url-pattern>/json</url-pattern>
+    </servlet-mapping>
+
 
     <servlet-mapping>
         <servlet-name>EchoServlet</servlet-name>

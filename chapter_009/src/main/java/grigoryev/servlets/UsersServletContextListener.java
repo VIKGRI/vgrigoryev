@@ -4,7 +4,6 @@ import org.apache.tomcat.jdbc.pool.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
@@ -102,12 +101,28 @@ public class UsersServletContextListener implements ServletContextListener {
             UserStorage.USER_STORAGE.bindRoleAndPrivilege("user", Action.Select);
             UserStorage.USER_STORAGE.bindRoleAndPrivilege("user", Action.Selectall);
 
+            UserStorage.USER_STORAGE.addCity("Saint Petersburg");
+            UserStorage.USER_STORAGE.addCity("Moscow");
+            UserStorage.USER_STORAGE.addCity("New York");
+            UserStorage.USER_STORAGE.addCity("London");
+            UserStorage.USER_STORAGE.addCity("Berlin");
+
+            UserStorage.USER_STORAGE.addCountry("Russia");
+            UserStorage.USER_STORAGE.addCountry("Great Britain");
+            UserStorage.USER_STORAGE.addCountry("Germany");
+            UserStorage.USER_STORAGE.addCountry("USA");
+
             Roles roles = Roles.getInstance();
 
             sce.getServletContext().setAttribute("roleList", roles.getRoleNames());
 
-            UserStorage.USER_STORAGE.insertUser(new User("root", "root", "root@mail.ru",
-                    System.currentTimeMillis(), "root", roles.getRole("admin")));
+            User admin = new User("root", "root", "root@mail.ru",
+                    System.currentTimeMillis(), "root", roles.getRole("admin"));
+            admin.setCity("Saint Petersburg");
+            admin.setCountry("Russia");
+
+            UserStorage.USER_STORAGE.insertUser(admin);
+
         } catch (UserStorageDAOException e) {
             appLogger.error(e.getMessage(), e);
         }

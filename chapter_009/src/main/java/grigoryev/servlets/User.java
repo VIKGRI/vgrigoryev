@@ -28,6 +28,15 @@ public class User {
      */
     private String password;
     /**
+     * User's city.
+     */
+    private String city;
+
+    /**
+     * User's country.
+     */
+    private String country;
+    /**
      * User's role.
      */
     private Role role;
@@ -146,5 +155,39 @@ public class User {
      */
     public void setRole(Role role) {
         this.role = role;
+    }
+
+
+    /**
+     * Gets user's city.
+     * @return user's city
+     */
+    public String getCity() {
+        return city;
+    }
+
+    /**
+     * Gets user's country.
+     * @return user's country
+     */
+    public String getCountry() {
+        return country;
+    }
+
+    /**
+     * Sets user's city.
+     * @param city user's city
+     */
+    public void setCity(String city) {
+
+        this.city = city;
+    }
+
+    /**
+     * Sets user's country.
+     * @param country user's country
+     */
+    public void setCountry(String country) {
+        this.country = country;
     }
 }

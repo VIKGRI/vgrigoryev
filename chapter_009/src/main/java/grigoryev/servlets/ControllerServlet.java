@@ -39,15 +39,17 @@ public class ControllerServlet extends HttpServlet {
         String email = req.getParameter("email");
         String password = req.getParameter("password");
         String actionType = req.getParameter("actionType");
+        String city = req.getParameter("city");
+        String country = req.getParameter("country");
         String role = req.getParameter("role");
         Roles roles = Roles.getInstance();
+
         User user = new User(name, login, email, System.currentTimeMillis(), password, roles.getRole(role));
+        user.setCity(city);
+        user.setCountry(country);
 
-        req.setAttribute("user", user);
         Logger logger = (Logger) req.getServletContext().getAttribute("appLogger");
-
         Role signedInUserRole = (Role) req.getSession().getAttribute("role");
-
         String operationResult =
                 new Model(logger, user, signedInUserRole).init().perform(ActionDispatcher.toAction(actionType));
         req.setAttribute("operationResult", operationResult);
