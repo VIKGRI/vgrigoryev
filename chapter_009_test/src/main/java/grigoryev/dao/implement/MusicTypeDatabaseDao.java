@@ -1,6 +1,7 @@
 package grigoryev.dao.implement;
 
 import grigoryev.controllers.ContextListener;
+import grigoryev.controllers.DataSourceHolder;
 import grigoryev.dao.DatabaseDAOException;
 import grigoryev.dao.MusicTypeDao;
 import grigoryev.models.MusicType;
@@ -31,7 +32,7 @@ public class MusicTypeDatabaseDao implements MusicTypeDao {
      * Implements singleton pattern.
      */
     private static final MusicTypeDatabaseDao INSTANCE
-            = new MusicTypeDatabaseDao(ContextListener.getDataSource());
+            = new MusicTypeDatabaseDao(DataSourceHolder.getInstance());
     /**
      * Datasource which provides connection pooling.
      */

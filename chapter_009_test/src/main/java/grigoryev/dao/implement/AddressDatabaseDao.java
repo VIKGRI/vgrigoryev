@@ -1,6 +1,6 @@
 package grigoryev.dao.implement;
 
-import grigoryev.controllers.ContextListener;
+import grigoryev.controllers.DataSourceHolder;
 import grigoryev.dao.AddressDao;
 import grigoryev.dao.DatabaseDAOException;
 import grigoryev.models.Address;
@@ -27,7 +27,7 @@ public class AddressDatabaseDao implements AddressDao {
      * Implements singleton pattern.
      */
     private static final AddressDatabaseDao INSTANCE
-            = new AddressDatabaseDao(ContextListener.getDataSource());
+            = new AddressDatabaseDao(DataSourceHolder.getInstance());
     /**
      * Datasource which provides connection pooling.
      */

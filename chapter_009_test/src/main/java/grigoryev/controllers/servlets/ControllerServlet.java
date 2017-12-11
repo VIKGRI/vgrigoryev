@@ -45,7 +45,7 @@ public class ControllerServlet extends HttpServlet {
         String login = req.getParameter("login");
         String email = req.getParameter("email");
         String password = req.getParameter("password");
-        String actionType = req.getParameter("actionType").toLowerCase();
+        String actionType = req.getParameter("actionType");
         String role = req.getParameter("role").trim().toLowerCase();
         String streetName = req.getParameter("street_name").trim().toLowerCase();
         String houseNumber = req.getParameter("house_no").trim().toLowerCase();

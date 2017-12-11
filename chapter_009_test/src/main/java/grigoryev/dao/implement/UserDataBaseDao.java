@@ -1,6 +1,7 @@
 package grigoryev.dao.implement;
 
 import grigoryev.controllers.ContextListener;
+import grigoryev.controllers.DataSourceHolder;
 import grigoryev.dao.DatabaseDAOException;
 import grigoryev.dao.repository.SqlSpecification;
 import grigoryev.dao.UserRepositoryDao;
@@ -32,7 +33,7 @@ public class UserDataBaseDao implements UserRepositoryDao {
      * Implements singleton pattern.
      */
     private static final UserDataBaseDao INSTANCE
-            = new UserDataBaseDao(ContextListener.getDataSource());
+            = new UserDataBaseDao(DataSourceHolder.getInstance());
     /**
      * Datasource which provides connection pooling.
      */

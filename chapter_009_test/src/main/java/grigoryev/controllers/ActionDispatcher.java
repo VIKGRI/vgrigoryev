@@ -62,15 +62,15 @@ public class ActionDispatcher {
      * @return initialized action dispatcher
      */
     public ActionDispatcher init() {
-        this.load(Action.Insert, this.insertAction());
-        this.load(Action.Delete, this.deleteAction());
-        this.load(Action.Update, this.updateAction());
-        this.load(Action.Select_by_id, this.selectByIdAction());
-        this.load(Action.Select_by_login, this.selectByLoginAction());
-        this.load(Action.Select_by_role, this.selectByRoleAction());
-        this.load(Action.Select_by_music_type, this.selectByMusicTypeAction());
-        this.load(Action.Select_by_address, this.selectByAddressTypeAction());
-        this.load(Action.Select_all, this.selectAllAction());
+        this.load(Action.INSERT, this.insertAction());
+        this.load(Action.DELETE, this.deleteAction());
+        this.load(Action.UPDATE, this.updateAction());
+        this.load(Action.SELECT_BY_ID, this.selectByIdAction());
+        this.load(Action.SELECT_BY_LOGIN, this.selectByLoginAction());
+        this.load(Action.SELECT_BY_ROLE, this.selectByRoleAction());
+        this.load(Action.SELECT_BY_MUSIC_TYPE, this.selectByMusicTypeAction());
+        this.load(Action.SELECT_BY_ADDRESS, this.selectByAddressTypeAction());
+        this.load(Action.SELECT_ALL, this.selectAllAction());
         return this;
     }
 
@@ -108,11 +108,7 @@ public class ActionDispatcher {
      * @return action which corresponds to one of the loaded actions
      */
     public static Action toAction(String action) {
-        String firstLetter = action.trim().substring(0, 1).toUpperCase();
-        String restLetters = action.trim().toLowerCase().substring(1);
-        String act = firstLetter
-                + restLetters;
-        return Action.valueOf(act);
+        return Action.valueOf(action.trim().toUpperCase());
     }
 
     /**
@@ -124,7 +120,7 @@ public class ActionDispatcher {
         return (user) -> {
             List<User> users = null;
             try {
-                if (this.onlineUserRole.isActionAvailable(Action.Insert)) {
+                if (this.onlineUserRole.isActionAvailable(Action.INSERT)) {
                     User userWithId = UserDataBaseDao.getInstance().insert(user);
                     users = new ArrayList<>();
                     users.add(userWithId);
@@ -145,7 +141,7 @@ public class ActionDispatcher {
         return (user) -> {
             List<User> users = null;
             try {
-                if (this.onlineUserRole.isActionAvailable(Action.Delete)) {
+                if (this.onlineUserRole.isActionAvailable(Action.DELETE)) {
                     UserDataBaseDao.getInstance().delete(user);
                     users = new ArrayList<>();
                     users.add(user);
@@ -166,7 +162,7 @@ public class ActionDispatcher {
         return (user) -> {
             List<User> users = null;
             try {
-                if (this.onlineUserRole.isActionAvailable(Action.Update) && this.onlineUserRole.equals(user.getRole())
+                if (this.onlineUserRole.isActionAvailable(Action.UPDATE) && this.onlineUserRole.equals(user.getRole())
                         || this.onlineUserRole.getName().equals("admin") || this.onlineUserRole.getName().equals("mandator")) {
                     UserDataBaseDao.getInstance().update(user);
                     users = UserDataBaseDao.getInstance().selectAll();

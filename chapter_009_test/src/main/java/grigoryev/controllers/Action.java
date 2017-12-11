@@ -6,6 +6,6 @@ package grigoryev.controllers;
  * database.
  */
 public enum Action {
-    Insert, Delete, Update, Select_by_id, Select_by_login, Select_by_role,
-    Select_by_music_type, Select_by_address, Select_all
+    INSERT, DELETE, UPDATE, SELECT_BY_ID, SELECT_BY_LOGIN, SELECT_BY_ROLE,
+    SELECT_BY_MUSIC_TYPE, SELECT_BY_ADDRESS, SELECT_ALL
 }

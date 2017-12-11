@@ -3,6 +3,7 @@ package grigoryev.dao.implement;
 import grigoryev.controllers.Action;
 import grigoryev.controllers.ActionDispatcher;
 import grigoryev.controllers.ContextListener;
+import grigoryev.controllers.DataSourceHolder;
 import grigoryev.dao.DatabaseDAOException;
 import grigoryev.dao.RoleDao;
 import grigoryev.models.Role;
@@ -28,7 +29,7 @@ public class RoleDatabaseDao implements RoleDao {
      * Implements singleton pattern.
      */
     private static final RoleDatabaseDao INSTANCE
-            = new RoleDatabaseDao(ContextListener.getDataSource());
+            = new RoleDatabaseDao(DataSourceHolder.getInstance());
     /**
      * Datasource which provides connection pooling.
      */
