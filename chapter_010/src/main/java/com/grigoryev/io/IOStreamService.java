@@ -3,7 +3,9 @@ package com.grigoryev.io;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.InputStream;
+import java.io.*;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -44,5 +46,30 @@ public class IOStreamService {
             }
         }
         return doesContainNumber;
+    }
+
+    /**
+     * Deletes abuse words from the text.
+     *
+     * @param in specified input stream
+     * @param out specified output stream
+     * @param abuse specified abuse array
+     */
+    public void dropAbuses(InputStream in, OutputStream out, String[] abuse) {
+        if (in != null && out != null) {
+            List<String> abuseWords = Arrays.asList(abuse);
+            try (Scanner scanner = new Scanner(in);
+                 BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(out))) {
+                String currentWord;
+                while (scanner.hasNext()) {
+                    currentWord = scanner.next();
+                    if (!abuseWords.contains(currentWord)) {
+                        bw.write(currentWord + " ");
+                    }
+                }
+            } catch (IOException e) {
+                IO_SERVICE_LOGGER.error(e.getMessage());
+            }
+        }
     }
 }
