@@ -2,12 +2,9 @@ package com.grigoryev.io;
 
 import org.junit.Test;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -70,6 +67,38 @@ public class IOStreamServiceTest {
         }
 
         assertThat(result, is("There is number 9isNotANumber hello world"));
+    }
+
+    /**
+     * sort() method testing.
+     */
+    @Test
+    public void whenThen() throws IOException {
+        File srcFile = new File("src\\resources\\RUNNING.txt");
+        File dstFile = new File("src\\resources\\result.txt");
+        IOStreamService service = new IOStreamService();
+
+        service.sort(srcFile, dstFile);
+        List<String> result = new ArrayList<>();
+        try (RandomAccessFile src = new RandomAccessFile("src\\resources\\result.txt", "r")) {
+
+            String line;
+            while ((line = src.readLine()) != null) {
+                result.add(line);
+            }
+        }
+        boolean isOrderedByLength = true;
+        int previousElementLength = -1;
+        for (String str: result) {
+            if (str.length() < previousElementLength) {
+                isOrderedByLength = false;
+                break;
+            } else {
+                previousElementLength = str.length();
+            }
+        }
+
+        assertThat(isOrderedByLength, is(true));
     }
 
 }
