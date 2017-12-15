@@ -70,35 +70,29 @@ public class IOStreamServiceTest {
     }
 
     /**
-     * sort() method testing.
+     * naturalMergeSort() method testing.
      */
     @Test
-    public void whenThen() throws IOException {
-        File srcFile = new File("src\\resources\\RUNNING.txt");
-        File dstFile = new File("src\\resources\\result.txt");
+    public void whenDoMergeSortByStringMatchThenFileIsSorted() throws IOException {
+        File srcFile = new File("src\\resources\\result3.txt");
+        File dstFile = new File("src\\resources\\output.txt");
         IOStreamService service = new IOStreamService();
 
-        service.sort(srcFile, dstFile);
-        List<String> result = new ArrayList<>();
-        try (RandomAccessFile src = new RandomAccessFile("src\\resources\\result.txt", "r")) {
+        service.naturalMergeSort(srcFile, dstFile);
+        boolean isOrderedByLength = true;
+        try (RandomAccessFile src = new RandomAccessFile("src\\resources\\output.txt", "r")) {
 
+            int previousElementLength = 0;
             String line;
             while ((line = src.readLine()) != null) {
-                result.add(line);
+                if (line.length() < previousElementLength) {
+                    isOrderedByLength = false;
+                    break;
+                } else {
+                    previousElementLength = line.length();
+                }
             }
         }
-        boolean isOrderedByLength = true;
-        int previousElementLength = -1;
-        for (String str: result) {
-            if (str.length() < previousElementLength) {
-                isOrderedByLength = false;
-                break;
-            } else {
-                previousElementLength = str.length();
-            }
-        }
-
         assertThat(isOrderedByLength, is(true));
     }
-
 }
