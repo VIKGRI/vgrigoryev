@@ -63,7 +63,10 @@ public class IOStreamService {
                 while (scanner.hasNext()) {
                     currentWord = scanner.next();
                     if (!abuseWords.contains(currentWord)) {
-                        bw.write(currentWord + " ");
+                        bw.write(currentWord);
+                        if (scanner.hasNext()) {
+                            bw.write(" ");
+                        }
                     }
                 }
             } catch (IOException e) {
@@ -132,6 +135,7 @@ public class IOStreamService {
 
                 while (proceedSort) {
                     proceedSort = false;
+                    dst.seek(0);
                     while ((line = dst.readLine()) != null) {
                         String currentLine = line.trim();
                         if (captureSerie) {
@@ -144,10 +148,10 @@ public class IOStreamService {
                             }
                         }
                         if (!captureSerie) {
+                            proceedSort = true;
                             if (previousLineLength <= currentLine.length()) {
                                 auxiliaryTwo.write(String.format("%s\n", currentLine).getBytes("UTF-8"));
                                 previousLineLength = currentLine.length();
-                                proceedSort = true;
                             } else {
                                 captureSerie = true;
                                 auxiliaryOne.write(String.format("%s\n", currentLine).getBytes("UTF-8"));
@@ -160,11 +164,13 @@ public class IOStreamService {
                         merge(dst, auxiliaryOne, auxiliaryTwo);
                         oAux.truncate(0);
                         tAux.truncate(0);
-                    } else {
-                        helper1.deleteOnExit();
-                        helper2.deleteOnExit();
+                        captureSerie = true;
+                        previousLineLength = 0;
                     }
                 }
+                merge(dst, auxiliaryOne, auxiliaryTwo);
+                helper1.deleteOnExit();
+                helper2.deleteOnExit();
             }
         } catch (FileNotFoundException e) {
             IO_SERVICE_LOGGER.error(e.getMessage());
