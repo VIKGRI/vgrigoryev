@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration debug="false" xmlns:log4j='http://jakarta.apache.org/log4j/'>
+
+    <appender name="chatLog" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="chat_log.log"/>
+        <param name="Append" value="true"/>
+        <param name="DatePattern" value="'.'yyyy-MM-dd'.log'"/>
+        <param name="Encoding" value="UTF-8"/>
+        <layout class="org.apache.log4j.EnhancedPatternLayout">
+            <param name="ConversionPattern" value="%d{ISO8601} [%-5p][%-16.16t][%30c] - %m%n"/>
+        </layout>
+    </appender>
+
+    <root>
+        <priority value="INFO"/>
+        <appender-ref ref="chatLog"/>
+    </root>
+
+</log4j:configuration>
