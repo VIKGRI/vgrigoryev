@@ -2,9 +2,10 @@ package com.grigoryev.io;
 
 import org.junit.Test;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
@@ -17,17 +18,26 @@ import static org.junit.Assert.*;
  */
 public class FileSorterTest {
     /**
+     * File separator.
+     */
+    private static final String FS = System.getProperty("file.separator");
+
+    /**
      * sort() method testing.
      */
     @Test
     public void whenSortByStringLengthThenFileIsSorted() throws IOException {
-        File srcFile = new File("src\\resources\\file.txt");
-        File dstFile = new File("src\\resources\\output.txt");
+
+        Path testDirPath = Paths.get(String.format("%s", System.getProperty("user.dir")));
+
+        Path srcFile = testDirPath.resolve(String.format("src%sresources%<sfile.txt", FS));
+        Path dstFile = testDirPath.resolve(String.format("src%sresources%<soutput.txt", FS));
+
         FileSorter service = new FileSorter();
 
-        service.sort(srcFile, dstFile);
+        service.sort(srcFile.toFile(), dstFile.toFile());
         boolean isOrderedByLength = true;
-        try (RandomAccessFile src = new RandomAccessFile("src\\resources\\output.txt", "r")) {
+        try (RandomAccessFile src = new RandomAccessFile(srcFile.toString(), "r")) {
 
             int previousElementLength = 0;
             String line;
