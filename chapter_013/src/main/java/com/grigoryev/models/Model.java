@@ -1,5 +1,6 @@
 package com.grigoryev.models;
 
+import javax.persistence.*;
 import java.io.Serializable;
 
 /**
@@ -9,6 +10,9 @@ import java.io.Serializable;
  * @version 1
  * @since 02.01.2018
  */
+@Entity
+@Table(name = "model_table")
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Model implements Serializable {
 
     private static final long serialVersionUID = 7435861072540085163L;
@@ -36,6 +40,9 @@ public class Model implements Serializable {
      * Gets id.
      * @return id
      */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     public Integer getId() {
         return id;
     }

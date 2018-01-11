@@ -1,5 +1,7 @@
 package com.grigoryev.models;
 
+import javax.persistence.*;
+
 /**
  * Represents car in the database.
  *
@@ -7,6 +9,8 @@ package com.grigoryev.models;
  * @version 1
  * @since 07.01.2018
  */
+@Entity
+@Table(name = "cars")
 public class Car extends Model {
 
     private static final long serialVersionUID = 5832576579145787151L;
@@ -49,6 +53,7 @@ public class Car extends Model {
      * Gets car's model.
      * @return car's model
      */
+    @Column(name = "model")
     public String getModel() {
         return model;
     }
@@ -65,6 +70,9 @@ public class Car extends Model {
      * Gets car's engine.
      * @return car's engine
      */
+    //@Column(name = "car_engine_id", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "car_engine_id", nullable = false)
     public Engine getEngine() {
         return engine;
     }
@@ -81,6 +89,8 @@ public class Car extends Model {
      * Gets car's transmission.
      * @return car's transmission
      */
+    @ManyToOne
+    @JoinColumn(name = "car_transmission_id", nullable = false)
     public Transmission getTransmission() {
         return transmission;
     }
@@ -97,6 +107,8 @@ public class Car extends Model {
      * Gets car's car body.
      * @return car's car body
      */
+    @ManyToOne
+    @JoinColumn(name = "car_body_id", nullable = false)
     public CarBody getCarBody() {
         return carBody;
     }

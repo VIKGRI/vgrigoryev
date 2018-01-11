@@ -1,5 +1,9 @@
 package com.grigoryev.models;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
 /**
  * Represents car body in the database.
  *
@@ -7,6 +11,8 @@ package com.grigoryev.models;
  * @version 1
  * @since 07.01.2018
  */
+@Entity
+@Table(name = "car_bodies")
 public class CarBody extends Model {
 
     private static final long serialVersionUID = -1564336663072599659L;
@@ -37,6 +43,7 @@ public class CarBody extends Model {
      * Gets car body's type.
      * @return car body's type
      */
+    @Column(name = "type")
     public String getType() {
         return type;
     }
@@ -53,6 +60,7 @@ public class CarBody extends Model {
      * Gets car body's number of seats.
      * @return number of seats
      */
+    @Column(name = "seat_num")
     public int getSeatNum() {
         return seatNum;
     }

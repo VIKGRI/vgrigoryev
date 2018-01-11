@@ -1,5 +1,9 @@
 package com.grigoryev.models;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
 /**
  * Represents car's engine in the database.
  *
@@ -7,6 +11,8 @@ package com.grigoryev.models;
  * @version 1
  * @since 07.01.2018
  */
+@Entity
+@Table(name = "engines")
 public class Engine extends Model {
 
     private static final long serialVersionUID = 1488002706075047899L;
@@ -37,6 +43,7 @@ public class Engine extends Model {
      * Gets fuel type.
      * @return fuel type
      */
+    @Column(name = "fuel_type")
     public String getFuelType() {
         return fuelType;
     }
@@ -53,6 +60,7 @@ public class Engine extends Model {
      * Gets engine's volume.
      * @return engine's volume
      */
+    @Column(name = "volume")
     public double getVolume() {
         return volume;
     }

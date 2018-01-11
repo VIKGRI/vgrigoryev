@@ -1,5 +1,9 @@
 package com.grigoryev.models;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
 /**
  * Represents car's transmission in the database.
  *
@@ -7,6 +11,8 @@ package com.grigoryev.models;
  * @version 1
  * @since 07.01.2018
  */
+@Entity
+@Table(name = "transmissions")
 public class Transmission extends Model {
 
     private static final long serialVersionUID = -1548949299917382700L;
@@ -39,6 +45,7 @@ public class Transmission extends Model {
      * Gets transmission's type.
      * @return transmission's type
      */
+    @Column(name = "type")
     public String getType() {
         return type;
     }
@@ -55,6 +62,7 @@ public class Transmission extends Model {
      * Gets transmission's number of gears.
      * @return number of gears
      */
+    @Column(name = "gear_num")
     public int getGearNum() {
         return gearNum;
     }

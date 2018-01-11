@@ -29,6 +29,17 @@
 
     <!-- Mapping files -->
     <mapping resource="com/grigoryev/models/item.hbm.xml" />
+    <!--<mapping resource="com/grigoryev/models/car.hbm.xml" />
+    <mapping resource="com/grigoryev/models/carBodies.hbm.xml" />
+    <mapping resource="com/grigoryev/models/engine.hbm.xml" />
+    <mapping resource="com/grigoryev/models/transmission.hbm.xml" />-->
+
+    <mapping class="com.grigoryev.models.Model" />
+    <mapping class="com.grigoryev.models.Car" />
+    <mapping class="com.grigoryev.models.Engine" />
+    <mapping class="com.grigoryev.models.Transmission" />
+    <mapping class="com.grigoryev.models.CarBody" />
+
 
 </session-factory>
 
