@@ -1,0 +1,61 @@
+<web-app>
+
+    <servlet>
+        <servlet-name>ControllerServlet</servlet-name>
+        <servlet-class>grigoryev.controllers.servlets.ControllerServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ControllerServlet</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>Signin</servlet-name>
+        <servlet-class>grigoryev.controllers.servlets.SigninController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Signin</servlet-name>
+        <url-pattern>/signin</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>JSonController</servlet-name>
+        <servlet-class>grigoryev.controllers.servlets.JsonController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>JSonController</servlet-name>
+        <url-pattern>/json</url-pattern>
+    </servlet-mapping>
+
+    <filter>
+        <filter-name>AuthFilter</filter-name>
+        <filter-class>grigoryev.controllers.filters.AuthFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>AuthFilter</filter-name>
+        <url-pattern>*</url-pattern>
+    </filter-mapping>
+
+    <context-param>
+        <param-name>driver</param-name>
+        <param-value>org.postgresql.Driver</param-value>
+    </context-param>
+    <context-param>
+        <param-name>username</param-name>
+        <param-value>postgres</param-value>
+    </context-param>
+    <context-param>
+        <param-name>url</param-name>
+        <param-value>jdbc:postgresql://localhost:5432/servlets_test</param-value>
+    </context-param>
+    <context-param>
+        <param-name>password</param-name>
+        <param-value>Elbrus2017</param-value>
+    </context-param>
+
+    <listener>
+        <listener-class>
+            grigoryev.controllers.ContextListener
+        </listener-class>
+    </listener>
+</web-app>
